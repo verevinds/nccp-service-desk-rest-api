@@ -1,0 +1,36 @@
+{
+  "name": "nccp-service-desk-rest-api",
+  "version": "1.0.0",
+  "description": "REST API server written in Node JS based on MySQL database",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/verevinds/nccp-service-desk-rest-api.git"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "mysql",
+    "nodejs",
+    "sequelize",
+    "express",
+    "mysql2",
+    "body-parser"
+  ],
+  "author": "Verevin Denis <verevinds@yandex.ru>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/verevinds/nccp-service-desk-rest-api/issues"
+  },
+  "homepage": "https://github.com/verevinds/nccp-service-desk-rest-api#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.21.6"
+  }
+}
