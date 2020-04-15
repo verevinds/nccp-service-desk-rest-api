@@ -1,9 +1,9 @@
 module.exports = {
   HOST: 'localhost',
-  USER: 'root',
-  PASSWORD: '',
+  USER: 'postgres',
+  PASSWORD: '123456',
   DB: 'inventar',
-  dialect: 'mysql',
+  dialect: 'postgres',
   pool: {
     max: 5,
     min: 0,
