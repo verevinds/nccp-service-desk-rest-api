@@ -22,14 +22,17 @@ exports.create = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || `Some error occurred while creating the Department.`,
+          err.message ||
+          `Some error occurred while creating the Department.`,
       });
     });
 };
 
 exports.findAll = (req, res) => {
   const name = req.query.name;
-  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+  var condition = name
+    ? { name: { [Op.like]: `%${name}%` } }
+    : null;
 
   Department.findAll({ where: condition })
     .then((data) => {
@@ -38,7 +41,8 @@ exports.findAll = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || `Some error occurred while retrieving tuttorials.`,
+          err.message ||
+          `Some error occurred while retrieving tuttorials.`,
       });
     });
 };

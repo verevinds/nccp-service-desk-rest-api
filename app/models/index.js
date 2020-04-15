@@ -22,9 +22,7 @@ db.sequelize = sequelize;
 
 db.users = require('./user.model.js')(sequelize, Sequelize);
 db.departments = require('./department.model.js')(sequelize, Sequelize);
-
-// Implement associations "One-To-One" between table Users to Departments
-// db.departments.hasOne(db.users);
+db.posts = require('./post.model.js')(sequelize, Sequelize);
 
 // Implement associations "One-To-Many" between table User to Departments
 db.departments.hasOne(db.users);
