@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     access: {
       type: Sequelize.INTEGER,
     },
-    department: {
+    departmentId: {
       type: Sequelize.INTEGER,
     },
     pc_name: {

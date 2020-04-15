@@ -1,5 +1,6 @@
 const db = require('../models');
 const User = db.users;
+const Department = db.departments;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
@@ -17,7 +18,7 @@ exports.create = (req, res) => {
     name: req.body.name,
     number: req.body.number,
     access: req.body.access,
-    department: req.body.department,
+    departmentId: req.body.departmentId,
     pc_name: req.body.pc_name,
     pc_ip: req.body.pc_ip,
     post: req.body.post,
@@ -43,7 +44,7 @@ exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  User.findAll({ where: condition })
+  User.findAll({ where: condition, include: Department })
     .then((data) => {
       res.send(data);
     })
