@@ -1,6 +1,7 @@
 const db = require('../models');
 const User = db.users;
 const Department = db.departments;
+const Position = db.positions;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
@@ -21,7 +22,7 @@ exports.create = (req, res) => {
     departmentId: req.body.departmentId,
     pc_name: req.body.pc_name,
     pc_ip: req.body.pc_ip,
-    post: req.body.post,
+    positionId: req.body.positionId,
     email: req.body.email,
     jabber: req.body.jabber,
   };
@@ -44,7 +45,7 @@ exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  User.findAll({ where: condition, include: Department })
+  User.findAll({ where: condition, include: [Department, Position] })
     .then((data) => {
       res.send(data);
     })
@@ -78,7 +79,9 @@ exports.update = (req, res) => {
   User.update(req.body, { where: { id } })
     .then((num) => {
       if (num == 1) {
-        res.send({ message: `Tutorial was update successfully` });
+        res.send({
+          message: `Tutorial was update successfully`,
+        });
       } else {
         res.send({
           message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`,
@@ -109,9 +112,9 @@ exports.delete = (req, res) => {
       }
     })
     .catch((err) => {
-      res
-        .status(500)
-        .send({ message: `Could not delete Tutorial with id=${id}` });
+      res.status(500).send({
+        message: `Could not delete Tutorial with id=${id}`,
+      });
     });
 };
 
@@ -122,7 +125,9 @@ exports.deleteAll = (req, res) => {
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({
+        message: `${nums} Tutorials were deleted successfully!`,
+      });
     })
     .catch((err) => {
       res.status(500).send({

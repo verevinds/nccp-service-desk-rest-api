@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-  const Post = sequelize.define('user', {
+  const Position = sequelize.define('position', {
     name: {
       type: Sequelize.STRING,
     },
   });
 
-  return Post;
+  return Position;
 };

@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
     pc_ip: {
       type: Sequelize.STRING,
     },
-    post: {
+    positionId: {
       type: Sequelize.INTEGER,
     },
     email: {

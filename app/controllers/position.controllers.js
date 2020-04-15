@@ -1,6 +1,6 @@
 const db = require('../models');
-const Posts = db.posts;
-const Op = sequelize.Op;
+const Positions = db.positions;
+const Op = db.sequelize.Op;
 
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -10,39 +10,35 @@ exports.create = (req, res) => {
     return;
   }
 
-  const post = {
+  const position = {
     name: req.body.name,
-    postId: req.body.postId,
+    positionId: req.body.positionId,
   };
 
-  Posts.create(post)
+  Positions.create(position)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message ||
-          `Some error occurred while creating the Department.`,
+          err.message || `Some error occurred while creating the Department.`,
       });
     });
 };
 
 exports.findAll = (req, res) => {
   const name = req.body.name;
-  var condition = name
-    ? { name: { [Op.like]: `%${name}%` } }
-    : null;
+  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Post.findAll({ where: condition })
+  Positions.findAll({ where: condition })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message ||
-          `Some error occurred while retrieving tuttorials.`,
+          err.message || `Some error occurred while retrieving tuttorials.`,
       });
     });
 };
