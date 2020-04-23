@@ -3,10 +3,10 @@ module.exports = (app) => {
 
   let router = require('express').Router();
 
-  // Create new Toturial
+  // Create new Users
   router.post('/', users.create);
 
-  // Retrieve all Userss
+  // Retrieve all Users
   router.get('/', users.findAll);
 
   // Retrieve a single Users with id

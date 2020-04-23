@@ -4,4 +4,5 @@ module.exports = (app) => {
   require('./department.routes')(app);
   require('./auth.routes')(app);
   require('./priority.routes')(app);
+  require('./category.routes')(app);
 };
