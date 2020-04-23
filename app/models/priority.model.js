@@ -1,4 +1,4 @@
-modules.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, Sequelize) => {
   const Priority = sequelize.define('priority', {
     level: {
       type: Sequelize.INTEGER,
