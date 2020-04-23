@@ -6,7 +6,7 @@ module.exports = (app) => {
   router.post('/', priority.create);
   router.get('/', priority.findAll);
   // Update a Priority with id
-  router.put('/:id', priority.update);
+  router.put('/:level', priority.update);
 
   app.use('/api/priority', router);
 };
