@@ -7,7 +7,7 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   // Validate requests
-  if (!req.body.name) {
+  if (!req.body.number) {
     res.status(400).send({
       message: `Content can not be empty!`,
     });
@@ -17,15 +17,22 @@ exports.create = (req, res) => {
   // Create a Tutorial
   const users = {
     id: req.body.id,
-    name: req.body.name,
     number: req.body.number,
-    access: req.body.access,
-    departmentId: req.body.departmentId,
-    pc_name: req.body.pc_name,
-    pc_ip: req.body.pc_ip,
-    positionId: req.body.positionId,
+    job: req.body.job,
+    team: req.body.team,
+    fired: req.body.fired,
+    sex: req.body.sex,
+    name1: req.body.name1,
+    name2: req.body.name2,
+    name3: req.body.name3,
+    phone1: req.body.phone1,
+    phone2: req.body.phone2,
     email: req.body.email,
-    jabber: req.body.jabber,
+    exmail: req.body.exmail,
+    computer: req.body.computer,
+    dob: req.body.dob,
+    positionId: req.body.positionId,
+    departmentId: req.body.departmentId,
   };
 
   // Save Tutorial in the database
@@ -43,7 +50,7 @@ exports.create = (req, res) => {
 
 // Retrieve all Tutorials from the database
 exports.findAll = (req, res) => {
-  const name = req.query.name;
+  const name = req.query.name1;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
   User.findAll({ where: condition, include: [Department, Position] })
