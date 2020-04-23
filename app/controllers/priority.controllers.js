@@ -1,5 +1,5 @@
 const db = require('../models');
-const Priority = db.prioritys;
+const Priority = db.priorities;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
