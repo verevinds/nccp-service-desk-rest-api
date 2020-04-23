@@ -24,6 +24,7 @@ db.users = require('./user.model.js')(sequelize, Sequelize);
 db.departments = require('./department.model.js')(sequelize, Sequelize);
 db.positions = require('./position.model.js')(sequelize, Sequelize);
 db.auths = require('./auth.model.js')(sequelize, Sequelize);
+db.prioritys = require('./priority.model.js')(sequelize, Sequelize);
 
 // Implement associations "One-To-Many" between table User to Departments
 db.departments.hasOne(db.users);
