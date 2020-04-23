@@ -41,3 +41,25 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  User.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `"Priority" was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update "Priority" with id=${id}. Maybe "Priority" was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update "Priority" with id=${id}`,
+      });
+    });
+};
