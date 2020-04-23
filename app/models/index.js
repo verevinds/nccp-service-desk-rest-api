@@ -26,15 +26,15 @@ db.positions = require('./position.model.js')(sequelize, Sequelize);
 db.auths = require('./auth.model.js')(sequelize, Sequelize);
 db.prioritys = require('./priority.model.js')(sequelize, Sequelize);
 
-// Implement associations "One-To-Many" between table User to Departments
+// Implement associations "One-To-One" between table User to Departments
 db.departments.hasOne(db.users);
 db.users.belongsTo(db.departments);
 
-// Implement associations "One-To-Many" between table User to Departments
+// Implement associations "One-To-One" between table User to Departments
 db.positions.hasOne(db.users);
 db.users.belongsTo(db.positions);
 
-// Implement associations "One-To-Many" between table User to Auth
+// Implement associations "One-To-One" between table User to Auth
 db.users.hasOne(db.auths);
 db.auths.belongsTo(db.users);
 
