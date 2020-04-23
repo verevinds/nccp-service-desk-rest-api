@@ -60,7 +60,7 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Error retrieving Tutorial with id=${id}`,
+        message: err.message || `Error retrieving Auth with id=${id}`,
       });
     });
 };

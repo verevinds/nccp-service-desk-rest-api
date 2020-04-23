@@ -6,19 +6,19 @@ module.exports = (app) => {
   // Create new Toturial
   router.post('/', users.create);
 
-  // Retrieve all Tutorials
+  // Retrieve all Userss
   router.get('/', users.findAll);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve a single Users with id
   router.get('/:id', users.findOne);
 
-  // Update a Tutorial with id
+  // Update a Users with id
   router.put('/:id', users.update);
 
-  // Delete a Tutorial with id
+  // Delete a Users with id
   router.delete('/:id', users.delete);
 
-  // Create a new Tutorial
+  // Create a new Users
   router.delete('/', users.deleteAll);
 
   app.use('/api/users', router);

@@ -4,7 +4,7 @@ const Department = db.departments;
 const Position = db.positions;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Tutorial
+// Create and Save a new Users
 exports.create = (req, res) => {
   // Validate requests
   if (!req.body.number) {
@@ -14,7 +14,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
+  //Create object "users" for request DB
   const users = {
     id: req.body.id,
     number: req.body.number,
@@ -35,20 +35,19 @@ exports.create = (req, res) => {
     departmentId: req.body.departmentId,
   };
 
-  // Save Tutorial in the database
+  // Save Users in the database
   User.create(users)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while creating the Tutorial.`,
+        message: err.message || `Some error occurred while creating the Users.`,
       });
     });
 };
 
-// Retrieve all Tutorials from the database
+// Retrieve all Userss from the database
 exports.findAll = (req, res) => {
   const name = req.query.name1;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
@@ -59,13 +58,12 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving tuttorials.`,
+        message: err.message || `Some error occurred while retrieving users.`,
       });
     });
 };
 
-// Find a single Tutorial with an id
+// Find a single Users with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
@@ -75,12 +73,12 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Error retrieving Tutorial with id=${id}`,
+        message: err.message || `Error retrieving Users with id=${id}`,
       });
     });
 };
 
-// Update a Tutorial by the id in the request
+// Update a Users by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
@@ -88,22 +86,22 @@ exports.update = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: `Tutorial was update successfully`,
+          message: `Users was update successfully`,
         });
       } else {
         res.send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`,
+          message: `Cannot update Users with id=${id}. Maybe Users was not found or req.body is empty!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Error update Tutorial with id=${id}`,
+        message: `Error update Users with id=${id}`,
       });
     });
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Users with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
@@ -111,22 +109,22 @@ exports.delete = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: `Tutorial was deleted successfully!`,
+          message: `Users was deleted successfully!`,
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`,
+          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Could not delete Tutorial with id=${id}`,
+        message: `Could not delete Users with id=${id}`,
       });
     });
 };
 
-// Delete all Tutorials from the database
+// Delete all Userss from the database
 exports.deleteAll = (req, res) => {
   User.destroy({
     where: {},
@@ -134,13 +132,13 @@ exports.deleteAll = (req, res) => {
   })
     .then((nums) => {
       res.send({
-        message: `${nums} Tutorials were deleted successfully!`,
+        message: `${nums} Userss were deleted successfully!`,
       });
     })
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || 'Some error occurred while removing all tutorials.',
+          err.message || 'Some error occurred while removing all Userss.',
       });
     });
 };

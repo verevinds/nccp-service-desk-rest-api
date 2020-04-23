@@ -20,6 +20,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+//FIXME: провести рефакторинг кода для сокращения объема
 db.users = require('./user.model.js')(sequelize, Sequelize);
 db.departments = require('./department.model.js')(sequelize, Sequelize);
 db.positions = require('./position.model.js')(sequelize, Sequelize);
@@ -40,8 +41,9 @@ db.users.belongsTo(db.positions);
 db.users.hasOne(db.auths);
 db.auths.belongsTo(db.users);
 
+// TODO: Организовать связь One-To-Many между Category-Property
 // Implement associations "One-To-Many" between table Category to Property
-// db.users.hasMany(db.auths);
-// db.auths.belongsTo(db.users);
+//// db.users.hasMany(db.auths);
+//// db.auths.belongsTo(db.users);
 
 module.exports = db;
