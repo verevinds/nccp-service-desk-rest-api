@@ -1,12 +1,12 @@
-module.exports = (sequelize, Seqelize) => {
+module.exports = (sequelize, Sequelize) => {
   const Auth = sequelize.define('auth', {
     ip: {
-      type: Seqelize.STRING,
+      type: Sequelize.STRING,
       primaryKey: true,
       allowNull: false,
     },
     userNumber: {
-      type: Seqelize.INTEGER,
+      type: Sequelize.INTEGER,
     },
   });
 
