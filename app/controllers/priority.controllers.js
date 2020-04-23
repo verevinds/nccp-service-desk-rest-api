@@ -26,3 +26,18 @@ exports.create = (req, res) => {
       });
     });
 };
+
+exports.findAll = (req, res) => {
+  const level = req.query.level;
+  var condition = level ? { level: { [Op.like]: `%${name}%` } } : null;
+
+  Priority.findAll({ where: condition })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      resizeTo.status(500).send({
+        message: err.message || `Some error occurred while retrieving Priority`,
+      });
+    });
+};
