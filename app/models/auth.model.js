@@ -7,6 +7,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     userNumber: {
       type: Sequelize.INTEGER,
+      field: 'user_number',
     },
   });
 

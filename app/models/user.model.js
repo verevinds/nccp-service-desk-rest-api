@@ -7,9 +7,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     positionId: {
       type: Sequelize.INTEGER,
+      field: 'position_id',
     },
     departmentId: {
       type: Sequelize.INTEGER,
+      field: 'department_id',
     },
     fired: {
       type: Sequelize.INTEGER,
