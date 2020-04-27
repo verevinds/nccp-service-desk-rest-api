@@ -1,9 +1,9 @@
 const db = require('../models');
-const Property = db.properties;
+const Option = db.options;
 const Op = db.Sequelize.Op;
 
-//! Создание и сохранение нового свойства
-// Create and Save a new Property
+//! Создание и сохранение новой опции
+// Create and Save a new Option
 exports.create = (req, res) => {
   //* Проверить сущевствет поле name в запросе
   if (!req.body.name) {
@@ -15,22 +15,20 @@ exports.create = (req, res) => {
 
   //* Создание объекта Proporty для запросов с базой данных
   // Create object "Proporty" for request DB
-  const property = {
+  const option = {
     name: req.body.name,
     categoryId: req.body.categoryId,
-    priorityId: req.body.priorityId,
   };
 
   //* Сохранение объекта Property в базу данных
   // Save Users in the database
-  Property.create(property)
+  Option.create(option)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occured while creating the Property`,
+        message: err.message || `Some error occured while creating the Option`,
       });
     });
 };
@@ -41,29 +39,13 @@ exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Property.findAll({ where: condition })
+  Option.findAll({ where: condition })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Some error occurred while retrieving Property`,
+        message: err.message || `Some error occurred while retrieving Option`,
       });
     });
 };
-
-//! Поиск одного Свойства по id
-// Find a single Property with an id
-exports.findOne = (req, res) => {};
-
-//! Обновление Свойства определенного по id из запроса
-// Update a Property by the id in the request
-exports.update = (req, res) => {};
-
-//! Удаление Свойства определенного по id из запроса
-// Delete a Property with the specified id in the request
-exports.delete = (req, res) => {};
-
-//! Удаление всех Свойств
-// Delete all Properties from the database
-exports.deleteAll = (req, res) => {};

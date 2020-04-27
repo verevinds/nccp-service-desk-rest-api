@@ -28,7 +28,7 @@ db.auths = require('./auth.model.js')(sequelize, Sequelize);
 db.priorities = require('./priority.model.js')(sequelize, Sequelize);
 db.categories = require('./category.model.js')(sequelize, Sequelize);
 db.properties = require('./property.model')(sequelize, Sequelize);
-db.option = require('./option.model')(sequelize, Sequelize);
+db.options = require('./option.model')(sequelize, Sequelize);
 
 //! Осуществить связь One-To-One между User-Departments
 // Implement associations "One-To-One" between table User to Departments
@@ -49,5 +49,10 @@ db.auths.belongsTo(db.users);
 // Implement associations "One-To-Many" between table Category to Property
 db.categories.hasMany(db.properties);
 db.properties.belongsTo(db.categories);
+
+//! Осуществить связь One-To-Many между Category-Option
+// Implement associations "One-To-Many" between table Category to Option
+db.categories.hasMany(db.options);
+db.options.belongsTo(db.categories);
 
 module.exports = db;
