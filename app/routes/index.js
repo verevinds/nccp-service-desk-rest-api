@@ -5,4 +5,5 @@ module.exports = (app) => {
   require('./auth.routes')(app);
   require('./priority.routes')(app);
   require('./category.routes')(app);
+  require('./property.routes')(app);
 };

@@ -18,14 +18,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = require('./app/models');
 
 db.sequelize.sync();
-/**
- *  In development, you may need to drop existing tables and re-sync database.
- *  Just use force: true as following code:
- *
- *  При разработке может потребоваться удалить существующие таблицы и выполнить
- * повторную синхронизацию базы данных.
- *  Просто используйте force: true как следующий код:
- */
+// /
+//    In development, you may need to drop existing tables and re-sync database.
+//    Just use force: true as following code:
+
+//    При разработке может потребоваться удалить существующие таблицы и выполнить
+//   повторную синхронизацию базы данных.
+//    Просто используйте force: true как следующий код:
+//  /
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log('Drop and re-sync db.');
 // });

@@ -1,5 +1,6 @@
 const db = require('../models');
 const Category = db.categories;
+const Property = db.properties;
 const Op = db.Sequelize.Op;
 
 //Create and Save a new Categories
@@ -33,7 +34,7 @@ exports.findAll = (req, res) => {
   const name = req.query.name1;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Category.findAll({ where: condition })
+  Category.findAll({ where: condition, include: [Property] })
     .then((data) => {
       res.send(data);
     })
