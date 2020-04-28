@@ -54,13 +54,35 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const ip = req.params.ip;
 
-  User.findByPk(ip)
+  Auth.findByPk(ip)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || `Error retrieving Auth with id=${id}`,
+      });
+    });
+};
+
+exports.delete = (req, res) => {
+  const ip = req.params.ip;
+
+  Auth.destroy({ where: { ip } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Users was deleted successfully!`,
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Could not delete Users with id=${id}`,
       });
     });
 };

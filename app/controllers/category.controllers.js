@@ -58,21 +58,22 @@ exports.update = (req, res) => {};
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Option.destroy({ where: id })
+  Category.destroy({ where: { id } })
     .then((num) => {
       if (num == 1) {
-        res.send({
-          message: `Users was deleted successfully!`,
+        res.status(200).send({
+          code: 200,
+          message: `Category was deleted successfully!`,
         });
       } else {
         res.send({
-          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+          message: `Cannot delete Category with id=${id}. Maybe Category was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Could not delete Users with id=${id}`,
+        message: `Could not delete Category with id=${id}`,
       });
     });
 };

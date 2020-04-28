@@ -55,21 +55,21 @@ exports.findAll = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Option.destroy({ where: id })
+  Option.destroy({ where: { id } })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: `Users was deleted successfully!`,
+          message: `Option was deleted successfully!`,
         });
       } else {
         res.send({
-          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+          message: `Cannot delete Option with id=${id}. Maybe Option was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Could not delete Users with id=${id}`,
+        message: `Could not delete Option with id=${id}`,
       });
     });
 };

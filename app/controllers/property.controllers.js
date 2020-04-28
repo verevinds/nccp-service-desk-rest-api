@@ -65,21 +65,21 @@ exports.update = (req, res) => {};
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Property.destroy({ where: id })
+  Property.destroy({ where: { id } })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: `Users was deleted successfully!`,
+          message: `Property was deleted successfully!`,
         });
       } else {
         res.send({
-          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+          message: `Cannot delete Property with id=${id}. Maybe Property was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Could not delete Users with id=${id}`,
+        message: `Could not delete Property with id=${id}`,
       });
     });
 };

@@ -18,8 +18,6 @@ exports.create = (req, res) => {
   const users = {
     id: req.body.id,
     number: req.body.number,
-    job: req.body.job,
-    team: req.body.team,
     fired: req.body.fired,
     sex: req.body.sex,
     name1: req.body.name1,

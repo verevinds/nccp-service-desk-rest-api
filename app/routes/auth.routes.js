@@ -6,7 +6,7 @@ module.exports = (app) => {
   router.post('/', auth.create);
   router.get('/', auth.findAll);
   router.get('/:ip', auth.findAll);
-  // router.get('/:ip', auth.findOne);
+  router.delete('/:ip', auth.delete);
 
   app.use('/api/auth', router);
 };
