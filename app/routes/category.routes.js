@@ -3,11 +3,14 @@ module.exports = (app) => {
 
   let router = require('express').Router();
 
-  // Create new Users
+  // Create new Category
   router.post('/', category.create);
 
-  // Retrieve all Users
+  // Retrieve all Category
   router.get('/', category.findAll);
+
+  // Delete a Category with id
+  router.delete('/:id', category.delete);
 
   app.use('/api/categories', router);
 };

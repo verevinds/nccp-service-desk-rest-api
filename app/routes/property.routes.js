@@ -11,5 +11,9 @@ module.exports = (app) => {
   // Route for Retrieve all "Property" from the database
   router.get('/', properties.findAll);
 
+  //! Роуте "Property" по id
+  // Delete a Property with id
+  router.delete('/:id', properties.delete);
+
   app.use('/api/properties', router);
 };

@@ -4,12 +4,16 @@ module.exports = (app) => {
   let router = require('express').Router();
 
   //! Роуте для создания и сохранения новой опции в базе данных
-  // Route for Create and Save "Property"
+  // Route for Create and Save "Option"
   router.post('/', options.create);
 
-  //! Роуте получения всех записей в таблице "Property"
-  // Route for Retrieve all "Property" from the database
+  //! Роуте получения всех записей в таблице "Option"
+  // Route for Retrieve all "Option" from the database
   router.get('/', options.findAll);
+
+  //! Роуте "Option" по id
+  // Delete a Option with id
+  router.delete('/:id', options.delete);
 
   app.use('/api/options', router);
 };
