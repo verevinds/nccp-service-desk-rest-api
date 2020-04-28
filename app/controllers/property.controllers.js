@@ -62,7 +62,27 @@ exports.update = (req, res) => {};
 
 //! Удаление Свойства определенного по id из запроса
 // Delete a Property with the specified id in the request
-exports.delete = (req, res) => {};
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Property.destroy({ where: id })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Users was deleted successfully!`,
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Could not delete Users with id=${id}`,
+      });
+    });
+};
 
 //! Удаление всех Свойств
 // Delete all Properties from the database

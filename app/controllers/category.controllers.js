@@ -55,7 +55,27 @@ exports.findOne = (req, res) => {};
 exports.update = (req, res) => {};
 
 // Delete a Categories with the specified id in the request
-exports.delete = (req, res) => {};
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Option.destroy({ where: id })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Users was deleted successfully!`,
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Could not delete Users with id=${id}`,
+      });
+    });
+};
 
 // Delete all Categories from the database
 exports.deleteAll = (req, res) => {};
