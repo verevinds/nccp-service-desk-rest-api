@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Priority = sequelize.define('priority', {
-    level: {
+    id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       allowNull: false,

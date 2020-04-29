@@ -29,6 +29,7 @@ db.priorities = require('./priority.model.js')(sequelize, Sequelize);
 db.categories = require('./category.model.js')(sequelize, Sequelize);
 db.properties = require('./property.model')(sequelize, Sequelize);
 db.options = require('./option.model')(sequelize, Sequelize);
+db.incidents = require('./incident.model')(sequelize, Sequelize);
 
 //! Осуществить связь One-To-One между User-Departments
 // Implement associations "One-To-One" between table User to Departments
@@ -54,5 +55,15 @@ db.properties.belongsTo(db.categories);
 // Implement associations "One-To-Many" between table Category to Option
 db.categories.hasMany(db.options);
 db.options.belongsTo(db.categories);
+
+//! Осуществить связь One-To-One между Incident-Departments
+// Implement associations "One-To-One" between table Incident to Departments
+db.departments.hasMany(db.incidents);
+db.incidents.belongsTo(db.departments);
+
+//! Осуществить связь One-To-One между Incident-Positions
+// Implement associations "One-To-One" between table Incident to Positions
+db.positions.hasMany(db.incidents);
+db.incidents.belongsTo(db.positions);
 
 module.exports = db;

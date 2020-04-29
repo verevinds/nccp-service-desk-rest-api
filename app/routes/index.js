@@ -7,4 +7,5 @@ module.exports = (app) => {
   require('./category.routes')(app);
   require('./property.routes')(app);
   require('./option.routes')(app);
+  require('./incident.routes')(app);
 };
