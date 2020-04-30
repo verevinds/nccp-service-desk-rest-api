@@ -66,4 +66,19 @@ db.incidents.belongsTo(db.departments);
 db.positions.hasMany(db.incidents);
 db.incidents.belongsTo(db.positions);
 
+//! Осуществить связь One-To-One между Incident-Property
+// Implement associations "One-To-One" between table Incident to Positions
+db.properties.hasMany(db.incidents);
+db.incidents.belongsTo(db.properties);
+
+//! Осуществить связь One-To-One между Incident-Option
+// Implement associations "One-To-One" between table Incident to Positions
+db.options.hasMany(db.incidents);
+db.incidents.belongsTo(db.options);
+
+//! Осуществить связь One-To-One между Incident-Category
+// Implement associations "One-To-One" between table Incident to Positions
+db.categories.hasMany(db.incidents);
+db.incidents.belongsTo(db.categories);
+
 module.exports = db;

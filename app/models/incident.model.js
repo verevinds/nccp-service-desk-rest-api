@@ -44,14 +44,17 @@ module.exports = (sequelize, Sequelize) => {
     phone2: {
       type: Sequelize.STRING,
     },
-    category: {
+    categoryId: {
       type: Sequelize.INTEGER,
+      field: 'category_id',
     },
-    property: {
+    propertyId: {
       type: Sequelize.INTEGER,
+      field: 'property_id',
     },
-    option: {
+    optionId: {
       type: Sequelize.INTEGER,
+      field: 'option_id',
     },
   });
 

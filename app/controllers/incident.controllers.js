@@ -2,6 +2,9 @@ const db = require('../models');
 const Incident = db.incidents;
 const Department = db.departments;
 const Position = db.positions;
+const Category = db.categories;
+const Property = db.properties;
+const Option = db.options;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Incident
@@ -28,9 +31,9 @@ exports.create = (req, res) => {
     number: req.body.number,
     phone1: req.body.phone1,
     phone2: req.body.phone2,
-    category: req.body.category,
-    property: req.body.property,
-    option: req.body.option,
+    categoryId: req.body.categoryId,
+    propertyId: req.body.propertyId,
+    optionId: req.body.optionId,
   };
 
   Incident.create(incident)
@@ -47,7 +50,9 @@ exports.create = (req, res) => {
 
 // Retrieve all Incidents from the database
 exports.findAll = (req, res) => {
-  Incident.findAll({ include: [Department, Position] })
+  Incident.findAll({
+    include: [Department, Position, Category, Property, Option],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -66,7 +71,27 @@ exports.findOne = (req, res) => {};
 exports.update = (req, res) => {};
 
 // Delete a Incident with the specified id in the request
-exports.delete = (req, res) => {};
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Incident.destroy({ where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Incident was deleted successfully!`,
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Incident with id=${id}. Maybe Incident was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Could not delete Incident with id=${id}`,
+      });
+    });
+};
 
 // Delete all Incidents from the database
 exports.deleteAll = (req, res) => {};

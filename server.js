@@ -37,9 +37,9 @@ db.sequelize.sync();
 //?    При разработке может потребоваться удалить существующие таблицы и выполнить
 //?   повторную синхронизацию базы данных.
 //?    Просто используйте force: true как следующий код:
-//// db.sequelize.sync({ force: true }).then(() => {
-////   console.log('Drop and re-sync db.');
-//// });
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log('Drop and re-sync db.');
+// });
 
 //! Подключить роутеры
 // Import & start routes
