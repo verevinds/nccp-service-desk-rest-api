@@ -23,7 +23,7 @@ exports.create = (req, res) => {
     currentResponsible: req.body.currentResponsible,
     text: req.body.text,
     level: req.body.level,
-    status: req.body.status,
+    statusId: req.body.statusId,
     departmentId: req.body.departmentId,
     positionId: req.body.positionId,
     name: req.body.name,

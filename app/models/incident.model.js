@@ -18,8 +18,9 @@ module.exports = (sequelize, Sequelize) => {
     level: {
       type: Sequelize.INTEGER,
     },
-    status: {
+    statusId: {
       type: Sequelize.INTEGER,
+      field: 'status_id',
     },
     departmentId: {
       type: Sequelize.INTEGER,
