@@ -81,4 +81,11 @@ db.incidents.belongsTo(db.options);
 db.categories.hasMany(db.incidents);
 db.incidents.belongsTo(db.categories);
 
+//! Осуществить связь One-To-Many между Incident-Users
+// Implement associations "One-To-Many" between table Incident to Positions
+db.users.hasMany(db.incidents, {
+  as: 'responsible',
+  foreignKey: 'currentResponsible',
+});
+db.incidents.belongsTo(db.users, { foreignKey: 'currentResponsible' });
 module.exports = db;

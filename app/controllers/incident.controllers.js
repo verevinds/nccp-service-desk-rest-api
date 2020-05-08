@@ -4,6 +4,7 @@ const Department = db.departments;
 const Position = db.positions;
 const Category = db.categories;
 const Property = db.properties;
+const User = db.users;
 const Option = db.options;
 const Op = db.Sequelize.Op;
 
@@ -51,7 +52,7 @@ exports.create = (req, res) => {
 // Retrieve all Incidents from the database
 exports.findAll = (req, res) => {
   Incident.findAll({
-    include: [Department, Position, Category, Property, Option],
+    include: [Department, Position, Category, Property, Option, User],
   })
     .then((data) => {
       res.send(data);
@@ -68,7 +69,27 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {};
 
 // Update a Incident by the id in the request
-exports.update = (req, res) => {};
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Incident.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Incidents was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Incidents with id=${id}. Maybe Incidents was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Incidents with id=${id}`,
+      });
+    });
+};
 
 // Delete a Incident with the specified id in the request
 exports.delete = (req, res) => {
