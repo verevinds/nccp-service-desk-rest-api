@@ -8,13 +8,13 @@ const app = express();
 
 //! Создать переменную с настройками для cors
 // Create a variable with settings for cors
-const corsOptions = {
-  origin: 'http://localhost:8081',
-};
+// const corsOptions = {
+//   origin: 'http://localhost:8081',
+// };
 
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-app.use(cors(corsOptions));
+app.use(cors());
 
 //! Разбор запросов типа content-type - application/json
 // Parse requests of content-type - application/json
