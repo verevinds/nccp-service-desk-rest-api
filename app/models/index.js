@@ -96,6 +96,14 @@ db.sequelize = sequelize;
     foreignKey: 'currentResponsible',
   });
   db.incidents.belongsTo(db.users, { foreignKey: 'currentResponsible' });
+
+  //! Осуществить связь One-To-Many между Incident-Users
+  // Implement associations "One-To-Many" between table Incident to Positions
+  db.users.hasOne(db.incidents, {
+    as: 'initiator',
+    foreignKey: 'number',
+  });
+  db.incidents.belongsTo(db.users, { foreignKey: 'numberInitiator' });
 }
 
 module.exports = db;

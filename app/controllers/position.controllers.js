@@ -28,10 +28,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  const name = req.body.name;
-  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-
-  Positions.findAll({ where: condition })
+  Positions.findAll()
     .then((data) => {
       res.send(data);
     })
