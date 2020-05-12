@@ -64,6 +64,23 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+exports.findResponsible = (req, res) => {
+  const departmentId = req.params.departmentId;
+
+  Incident.findAll({
+    where: { departmentId },
+    include: [Department, Position, Category, Property, Option, User],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Error retrieving Incident with number=${id}`,
+      });
+    });
+};
 exports.findMy = (req, res) => {
   const number = req.params.number;
 
