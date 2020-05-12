@@ -11,6 +11,7 @@ module.exports = (app) => {
 
   // Retrieve a single Incident with id
   router.get('/:id', incident.findOne);
+  router.get('/my/:number', incident.findMy);
 
   // Update a Incident with id
   router.put('/:id', incident.update);

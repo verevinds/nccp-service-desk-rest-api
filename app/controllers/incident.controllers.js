@@ -64,9 +64,26 @@ exports.findAll = (req, res) => {
       });
     });
 };
+exports.findMy = (req, res) => {
+  const number = req.params.number;
+
+  Incident.findAll({
+    where: { number },
+    include: [Department, Position, Category, Property, Option, User],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Error retrieving Incident with number=${id}`,
+      });
+    });
+};
 
 // Find a single Incident with an id
 exports.findOne = (req, res) => {};
+// Find a single Incident with an id
 
 // Update a Incident by the id in the request
 exports.update = (req, res) => {
