@@ -27,6 +27,10 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
     },
+    departmentId: {
+      type: Sequelize.INTEGER,
+      field: 'department_id',
+    },
   });
   return Category;
 };

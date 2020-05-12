@@ -1,5 +1,6 @@
 const db = require('../models');
 const Department = db.departments;
+const Category = db.categories;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
@@ -31,7 +32,11 @@ exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Department.findAll({ where: condition })
+  Department.findAll({
+    attributes: ['id', 'name'],
+    where: condition,
+    include: [Category],
+  })
     .then((data) => {
       res.send(data);
     })

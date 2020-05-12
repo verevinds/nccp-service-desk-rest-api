@@ -17,6 +17,7 @@ exports.create = (req, res) => {
   //Create object "category" for request DB
   const category = {
     name: req.body.name,
+    departmentId: req.body.departmentId,
   };
 
   Category.create(category)
@@ -79,4 +80,20 @@ exports.delete = (req, res) => {
 };
 
 // Delete all Categories from the database
-exports.deleteAll = (req, res) => {};
+exports.deleteAll = (req, res) => {
+  Category.destroy({
+    where: {},
+    truncate: false,
+  })
+    .then((nums) => {
+      res.send({
+        message: `${nums} Category were deleted successfully!`,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || 'Some error occurred while removing all Category.',
+      });
+    });
+};
