@@ -31,6 +31,7 @@ db.sequelize = sequelize;
   db.properties = require('./property.model')(sequelize, Sequelize);
   db.options = require('./option.model')(sequelize, Sequelize);
   db.incidents = require('./incident.model')(sequelize, Sequelize);
+  db.status = require('./status.model')(sequelize, Sequelize);
 }
 
 {

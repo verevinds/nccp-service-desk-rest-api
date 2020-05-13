@@ -8,4 +8,5 @@ module.exports = (app) => {
   require('./property.routes')(app);
   require('./option.routes')(app);
   require('./incident.routes')(app);
+  require('./status.routes')(app);
 };
