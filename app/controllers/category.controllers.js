@@ -53,7 +53,27 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {};
 
 // Update a Categories by the id in the request
-exports.update = (req, res) => {};
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Category.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Categories was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Categories with id=${id}. Maybe Categories was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Categories with id=${id}`,
+      });
+    });
+};
 
 // Delete a Categories with the specified id in the request
 exports.delete = (req, res) => {

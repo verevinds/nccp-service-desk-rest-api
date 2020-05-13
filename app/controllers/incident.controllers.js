@@ -10,7 +10,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Incident
 exports.create = (req, res) => {
-  if (!req.body.number) {
+  if (!req.body.userNumber) {
     res.status(400).send({
       message: `Content can not be empty!`,
     });
@@ -25,7 +25,7 @@ exports.create = (req, res) => {
     level: req.body.level,
     statusId: req.body.statusId,
     departmentId: req.body.departmentId,
-    numberInitiator: req.body.numberInitiator,
+    userNumber: req.body.userNumber,
     categoryId: req.body.categoryId,
     propertyId: req.body.propertyId,
     optionId: req.body.optionId,
@@ -47,13 +47,13 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   Incident.findAll({
     include: [
-      Department,
+      { model: Department, attributes: ['name'] },
       Position,
       Category,
       Property,
       Option,
-      { model: User, as: 'initiator_user' },
-      { model: User, as: 'responsible_user' },
+      { model: User, as: 'initiatorUser' },
+      { model: User, as: 'responsibleUser' },
     ],
   })
     .then((data) => {
@@ -71,8 +71,19 @@ exports.findResponsible = (req, res) => {
   const departmentId = req.params.departmentId;
 
   Incident.findAll({
-    where: { departmentId },
-    include: [Department, Position, Category, Property, Option],
+    where: {},
+    include: [
+      {
+        model: Category,
+        attributes: ['departmentId', 'name'],
+        required: true,
+        where: { departmentId },
+      },
+      Property,
+      Option,
+      { model: User, as: 'initiatorUser' },
+      { model: User, as: 'responsibleUser' },
+    ],
   })
     .then((data) => {
       res.send(data);
@@ -84,11 +95,19 @@ exports.findResponsible = (req, res) => {
     });
 };
 exports.findMy = (req, res) => {
-  const number = req.params.number;
+  const userNumber = req.params.userNumber;
 
   Incident.findAll({
-    where: { number },
-    include: [Department, Position, Category, Property, Option, User],
+    where: { userNumber },
+    include: [
+      { model: Department, attributes: ['name'] },
+      Position,
+      Category,
+      Property,
+      Option,
+      { model: User, as: 'initiatorUser' },
+      { model: User, as: 'responsibleUser' },
+    ],
   })
     .then((data) => {
       res.send(data);

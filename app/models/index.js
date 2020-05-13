@@ -95,13 +95,13 @@ db.sequelize = sequelize;
   db.incidents.belongsTo(db.users, {
     foreignKey: 'currentResponsible',
     targetKey: 'number',
-    as: 'responsible_user',
+    as: 'responsibleUser',
   });
   db.users.hasMany(db.incidents);
   db.incidents.belongsTo(db.users, {
     foreignKey: 'userNumber',
     targetKey: 'number',
-    as: 'initiator_user',
+    as: 'initiatorUser',
   });
 
   //! Осуществить связь One-To-Many между Incident-Users
