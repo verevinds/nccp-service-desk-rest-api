@@ -22,9 +22,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       field: 'department_id',
     },
-    numberInitiator: {
-      field: 'number_initiator',
-      type: Sequelize.STRING,
+    userNumber: {
+      field: 'user_number',
+      type: Sequelize.INTEGER,
     },
     categoryId: {
       type: Sequelize.INTEGER,

@@ -46,7 +46,15 @@ exports.create = (req, res) => {
 // Retrieve all Incidents from the database
 exports.findAll = (req, res) => {
   Incident.findAll({
-    include: [Department, Position, Category, Property, Option, User],
+    include: [
+      Department,
+      Position,
+      Category,
+      Property,
+      Option,
+      { model: User, as: 'initiator_user' },
+      { model: User, as: 'responsible_user' },
+    ],
   })
     .then((data) => {
       res.send(data);
@@ -64,7 +72,7 @@ exports.findResponsible = (req, res) => {
 
   Incident.findAll({
     where: { departmentId },
-    include: [Department, Position, Category, Property, Option, User],
+    include: [Department, Position, Category, Property, Option],
   })
     .then((data) => {
       res.send(data);

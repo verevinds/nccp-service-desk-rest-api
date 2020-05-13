@@ -91,19 +91,23 @@ db.sequelize = sequelize;
 
   //! Осуществить связь One-To-Many между Incident-Users
   // Implement associations "One-To-Many" between table Incident to Positions
-  db.users.hasMany(db.incidents, {
-    as: 'responsible',
+  db.users.hasMany(db.incidents);
+  db.incidents.belongsTo(db.users, {
     foreignKey: 'currentResponsible',
+    targetKey: 'number',
+    as: 'responsible_user',
   });
-  db.incidents.belongsTo(db.users, { foreignKey: 'currentResponsible' });
+  db.users.hasMany(db.incidents);
+  db.incidents.belongsTo(db.users, {
+    foreignKey: 'userNumber',
+    targetKey: 'number',
+    as: 'initiator_user',
+  });
 
   //! Осуществить связь One-To-Many между Incident-Users
   // Implement associations "One-To-Many" between table Incident to Positions
-  db.users.hasOne(db.incidents, {
-    as: 'initiator',
-    foreignKey: 'number',
-  });
-  db.incidents.belongsTo(db.users, { foreignKey: 'numberInitiator' });
+  // db.users.hasMany(db.incidents);
+  // db.incidents.belongsTo(db.users);
 }
 
 module.exports = db;
