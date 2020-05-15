@@ -46,11 +46,33 @@ exports.create = (req, res) => {
 
 // Retrieve all Incidents from the database
 exports.findAll = (req, res) => {
+  let where = {};
+  let whereCategory = {};
+  const userNumber = req.query.userNumber;
+  const departmentId = req.query.departmentId;
+  const history = req.query.history;
+  userNumber ? Object.assign(where, { userNumber }) : null;
+  history
+    ? Object.assign(where, {
+        statusId: '8388608',
+      })
+    : Object.assign(where, {
+        statusId: {
+          [Op.ne]: '8388608',
+        },
+      });
+  departmentId ? Object.assign(whereCategory, { departmentId }) : null;
+
   Incident.findAll({
+    where,
     include: [
       { model: Department, attributes: ['name'] },
-      Position,
-      Category,
+      {
+        model: Category,
+        attributes: ['departmentId', 'name'],
+        required: true,
+        where: whereCategory,
+      },
       Property,
       Option,
       { model: User, as: 'initiatorUser' },
@@ -59,6 +81,8 @@ exports.findAll = (req, res) => {
     ],
   })
     .then((data) => {
+      console.log('where', where);
+      console.log('whereCategory', whereCategory);
       res.send(data);
     })
     .catch((err) => {
@@ -69,97 +93,6 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findResponsible = (req, res) => {
-  const departmentId = req.params.departmentId;
-
-  Incident.findAll({
-    where: {
-      statusId: {
-        [Op.ne]: '8388608',
-      },
-    },
-    include: [
-      {
-        model: Category,
-        attributes: ['departmentId', 'name'],
-        required: true,
-        where: {
-          departmentId,
-        },
-      },
-      Property,
-      Option,
-      { model: User, as: 'initiatorUser' },
-      { model: User, as: 'responsibleUser' },
-      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
-    ],
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || `Error retrieving Incident with number=${id}`,
-      });
-    });
-};
-exports.findHistory = (req, res) => {
-  const departmentId = req.params.departmentId;
-
-  Incident.findAll({
-    where: {
-      statusId: '8388608',
-    },
-    include: [
-      {
-        model: Category,
-        attributes: ['departmentId', 'name'],
-        required: true,
-        where: {
-          departmentId,
-        },
-      },
-      Property,
-      Option,
-      { model: User, as: 'initiatorUser' },
-      { model: User, as: 'responsibleUser' },
-      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
-    ],
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || `Error retrieving Incident with number=${id}`,
-      });
-    });
-};
-exports.findMy = (req, res) => {
-  const userNumber = req.params.userNumber;
-
-  Incident.findAll({
-    where: { userNumber },
-    include: [
-      { model: Department, attributes: ['name'] },
-      Position,
-      Category,
-      Property,
-      Option,
-      { model: User, as: 'initiatorUser' },
-      { model: User, as: 'responsibleUser' },
-      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
-    ],
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || `Error retrieving Incident with number=${id}`,
-      });
-    });
-};
 // Find a single Incident with an id
 exports.findOne = (req, res) => {};
 // Find a single Incident with an id

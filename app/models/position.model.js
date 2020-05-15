@@ -3,6 +3,9 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
     },
+    level: {
+      type: Sequelize.INTEGER,
+    },
   });
 
   return Position;

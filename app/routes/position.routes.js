@@ -5,6 +5,7 @@ module.exports = (app) => {
 
   router.post('/', position.create);
   router.get('/', position.findAll);
+  router.put('/:id', position.update);
 
   app.use('/api/positions', router);
 };

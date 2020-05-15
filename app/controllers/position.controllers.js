@@ -12,7 +12,7 @@ exports.create = (req, res) => {
 
   const position = {
     name: req.body.name,
-    positionId: req.body.positionId,
+    level: req.body.level,
   };
 
   Positions.create(position)
@@ -36,6 +36,29 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || `Some error occurred while retrieving tuttorials.`,
+      });
+    });
+};
+
+// Update a Positions by the id in the request
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Positions.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Positions was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Positions with id=${id}. Maybe Positions was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Positions with id=${id}`,
       });
     });
 };
