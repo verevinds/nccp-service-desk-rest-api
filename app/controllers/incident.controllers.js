@@ -4,6 +4,7 @@ const Department = db.departments;
 const Position = db.positions;
 const Category = db.categories;
 const Property = db.properties;
+const CommentIncident = db.comments;
 const User = db.users;
 const Option = db.options;
 const Op = db.Sequelize.Op;
@@ -54,6 +55,7 @@ exports.findAll = (req, res) => {
       Option,
       { model: User, as: 'initiatorUser' },
       { model: User, as: 'responsibleUser' },
+      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
     ],
   })
     .then((data) => {
@@ -71,18 +73,57 @@ exports.findResponsible = (req, res) => {
   const departmentId = req.params.departmentId;
 
   Incident.findAll({
-    where: {},
+    where: {
+      statusId: {
+        [Op.ne]: '8388608',
+      },
+    },
     include: [
       {
         model: Category,
         attributes: ['departmentId', 'name'],
         required: true,
-        where: { departmentId },
+        where: {
+          departmentId,
+        },
       },
       Property,
       Option,
       { model: User, as: 'initiatorUser' },
       { model: User, as: 'responsibleUser' },
+      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Error retrieving Incident with number=${id}`,
+      });
+    });
+};
+exports.findHistory = (req, res) => {
+  const departmentId = req.params.departmentId;
+
+  Incident.findAll({
+    where: {
+      statusId: '8388608',
+    },
+    include: [
+      {
+        model: Category,
+        attributes: ['departmentId', 'name'],
+        required: true,
+        where: {
+          departmentId,
+        },
+      },
+      Property,
+      Option,
+      { model: User, as: 'initiatorUser' },
+      { model: User, as: 'responsibleUser' },
+      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
     ],
   })
     .then((data) => {
@@ -107,6 +148,7 @@ exports.findMy = (req, res) => {
       Option,
       { model: User, as: 'initiatorUser' },
       { model: User, as: 'responsibleUser' },
+      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
     ],
   })
     .then((data) => {
@@ -118,7 +160,6 @@ exports.findMy = (req, res) => {
       });
     });
 };
-
 // Find a single Incident with an id
 exports.findOne = (req, res) => {};
 // Find a single Incident with an id

@@ -16,6 +16,7 @@ exports.create = (req, res) => {
   const status = {
     id: req.body.id,
     name: req.body.name,
+    noChange: req.body.noChange,
   };
 
   // Save status in the database

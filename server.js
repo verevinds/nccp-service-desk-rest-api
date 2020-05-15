@@ -6,16 +6,30 @@ const cors = require('cors');
 // Create an express application
 const app = express();
 
+var whitelist = [
+  'http://localhost:5000',
+  'http://localhost:8081',
+  'http://192.168.214.106:5000',
+];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 //! Создать переменную с настройками для cors
 // Create a variable with settings for cors
-const corsOptions = {
-  origin: 'http://localhost:5000',
-};
+// const corsOptions = {
+//   origin: 'http://localhost:5000',
+// };
 
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-// app.use(cors(corsOptions));
 app.use(cors());
+// app.use(cors(corsOptions));
 
 //! Разбор запросов типа content-type - application/json
 // Parse requests of content-type - application/json

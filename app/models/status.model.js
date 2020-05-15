@@ -6,6 +6,10 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
     },
+    noChange: {
+      type: Sequelize.BOOLEAN,
+      field: 'no_change',
+    },
   });
   return Status;
 };

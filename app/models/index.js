@@ -32,6 +32,7 @@ db.sequelize = sequelize;
   db.options = require('./option.model')(sequelize, Sequelize);
   db.incidents = require('./incident.model')(sequelize, Sequelize);
   db.status = require('./status.model')(sequelize, Sequelize);
+  db.comments = require('./comment.model')(sequelize, Sequelize);
 }
 
 {
@@ -104,11 +105,18 @@ db.sequelize = sequelize;
     targetKey: 'number',
     as: 'initiatorUser',
   });
-
-  //! Осуществить связь One-To-Many между Incident-Users
-  // Implement associations "One-To-Many" between table Incident to Positions
-  // db.users.hasMany(db.incidents);
-  // db.incidents.belongsTo(db.users);
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.incidents.hasMany(db.comments);
+  db.comments.belongsTo(db.incidents);
+  // //! Осуществить связь One-To-One между Incident-Category
+  // // Implement associations "One-To-One" between table Incident to Positions
+  db.users.hasMany(db.comments);
+  db.comments.belongsTo(db.users, {
+    foreignKey: 'userNumber',
+    targetKey: 'number',
+    as: 'user',
+  });
 }
 
 module.exports = db;

@@ -10,10 +10,11 @@ module.exports = (app) => {
   router.get('/', incident.findAll);
 
   // Retrieve all Inciden twith userNumber
-  router.get('/my/:userNumber', incident.findMy);
+  router.get('/my', incident.findMy);
 
   // Retrieve all Incident with departmentId
   router.get('/responsible/:departmentId', incident.findResponsible);
+  router.get('/history/:departmentId', incident.findHistory);
 
   // Retrieve a single Incident with id
   router.get('/:id', incident.findOne);
