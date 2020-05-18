@@ -11,6 +11,7 @@ exports.create = (req, res) => {
   }
 
   const position = {
+    id: req.body.id,
     name: req.body.name,
     level: req.body.level,
   };

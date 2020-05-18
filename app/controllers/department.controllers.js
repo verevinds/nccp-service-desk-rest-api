@@ -12,6 +12,7 @@ exports.create = (req, res) => {
   }
 
   const department = {
+    id: req.body.id,
     name: req.body.name,
     departmentId: req.body.departmentId,
   };

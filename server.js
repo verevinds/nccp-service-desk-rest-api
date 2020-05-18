@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const parseUser = require('./parseUser');
 
 //! Cоздать express приложение
 // Create an express application
@@ -69,3 +70,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
+// parseUser();

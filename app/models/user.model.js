@@ -49,6 +49,9 @@ module.exports = (sequelize, Sequelize) => {
     dob: {
       type: Sequelize.DATEONLY,
     },
+    photo: {
+      type: Sequelize.STRING,
+    },
   });
 
   return User;

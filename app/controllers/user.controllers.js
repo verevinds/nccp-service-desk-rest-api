@@ -31,6 +31,7 @@ exports.create = (req, res) => {
     dob: req.body.dob,
     positionId: req.body.positionId,
     departmentId: req.body.departmentId,
+    photo: req.body.photo,
   };
 
   // Save Users in the database
@@ -48,7 +49,15 @@ exports.create = (req, res) => {
 // Retrieve all Userss from the database
 exports.findAll = (req, res) => {
   const name = req.query.name1;
-  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+  const departmentId = req.query.departmentId;
+  const number = req.query.number;
+  var condition = name
+    ? { name: { [Op.like]: `%${name}%` } }
+    : departmentId
+    ? { departmentId }
+    : number
+    ? { number }
+    : null;
 
   User.findAll({ where: condition, include: [Department, Position] })
     .then((data) => {
@@ -63,9 +72,9 @@ exports.findAll = (req, res) => {
 
 // Find a single Users with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
+  const number = req.params.id;
 
-  User.findByPk(id)
+  User.findByPk(number)
     .then((data) => {
       res.send(data);
     })
@@ -78,9 +87,9 @@ exports.findOne = (req, res) => {
 
 // Update a Users by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.id;
+  const number = req.params.id;
 
-  User.update(req.body, { where: { id } })
+  User.update(req.body, { where: { number } })
     .then((num) => {
       if (num == 1) {
         res.send({
