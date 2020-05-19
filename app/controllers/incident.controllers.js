@@ -8,6 +8,7 @@ const CommentIncident = db.comments;
 const User = db.users;
 const Option = db.options;
 const Op = db.Sequelize.Op;
+const io = db.io;
 
 // Create and Save a new Incident
 exports.create = (req, res) => {
@@ -36,6 +37,9 @@ exports.create = (req, res) => {
   Incident.create(incident)
     .then((data) => {
       res.send(data);
+      io.on('connection', (client) => {
+        client.broadcast.emit(String(incident.departmentId), 'update');
+      });
     })
     .catch((err) => {
       res.status(500).send({
@@ -70,7 +74,7 @@ exports.findAll = (req, res) => {
       { model: Department, attributes: ['name'] },
       {
         model: Category,
-        attributes: ['departmentId', 'name'],
+        attributes: ['departmentId', 'name', 'level'],
         required: true,
         where: whereCategory,
       },
@@ -95,7 +99,19 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Incident with an id
-exports.findOne = (req, res) => {};
+exports.findOne = (req, res) => {
+  const id = req.params.id;
+
+  Incident.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Error retrieving Users with id=${id}`,
+      });
+    });
+};
 // Find a single Incident with an id
 
 // Update a Incident by the id in the request

@@ -1,11 +1,7 @@
-const express = require('express');
+const app = require('express')();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const syncNCCP = require('./app/syncNCCP');
-
-//! Cоздать express приложение
-// Create an express application
-const app = express();
 
 var whitelist = [
   'http://localhost:5000',
@@ -70,5 +66,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
-
 // syncNCCP();
