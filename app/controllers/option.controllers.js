@@ -74,3 +74,27 @@ exports.delete = (req, res) => {
       });
     });
 };
+
+//! Обновление Опции определенного по id из запроса
+// Update a Option by the id in the request
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Option.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Option was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Option with id=${id}. Maybe Option was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Option with id=${id}`,
+      });
+    });
+};

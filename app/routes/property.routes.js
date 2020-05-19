@@ -15,5 +15,9 @@ module.exports = (app) => {
   // Delete a Property with id
   router.delete('/:id', properties.delete);
 
+  //! Роуте "Property" по id
+  // Delete a Property with id
+  router.put('/:id', properties.update);
+
   app.use('/api/properties', router);
 };

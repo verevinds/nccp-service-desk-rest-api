@@ -59,7 +59,27 @@ exports.findOne = (req, res) => {};
 
 //! Обновление Свойства определенного по id из запроса
 // Update a Property by the id in the request
-exports.update = (req, res) => {};
+exports.update = (req, res) => {
+  const id = req.params.id;
+
+  Property.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Property was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Property with id=${id}. Maybe Property was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Property with id=${id}`,
+      });
+    });
+};
 
 //! Удаление Свойства определенного по id из запроса
 // Delete a Property with the specified id in the request

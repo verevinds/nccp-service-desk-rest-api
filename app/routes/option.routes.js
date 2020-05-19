@@ -15,5 +15,9 @@ module.exports = (app) => {
   // Delete a Option with id
   router.delete('/:id', options.delete);
 
+  //! Роуте "Options" по id
+  // Delete a Options with id
+  router.put('/:id', options.update);
+
   app.use('/api/options', router);
 };
