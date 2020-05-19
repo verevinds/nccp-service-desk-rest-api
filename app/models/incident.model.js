@@ -38,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       field: 'option_id',
     },
+    consent: {
+      type: Sequelize.BOOLEAN,
+    },
   });
 
   return Incident;

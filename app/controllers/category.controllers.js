@@ -17,6 +17,7 @@ exports.create = (req, res) => {
   //Create object "category" for request DB
   const category = {
     name: req.body.name,
+    level: req.body.level,
     departmentId: req.body.departmentId,
   };
 

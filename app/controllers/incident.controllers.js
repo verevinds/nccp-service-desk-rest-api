@@ -30,6 +30,7 @@ exports.create = (req, res) => {
     categoryId: req.body.categoryId,
     propertyId: req.body.propertyId,
     optionId: req.body.optionId,
+    consent: req.body.consent,
   };
 
   Incident.create(incident)

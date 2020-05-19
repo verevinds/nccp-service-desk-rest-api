@@ -17,16 +17,28 @@ exports.create = (req, res) => {
     departmentId: req.body.departmentId,
   };
 
-  Department.create(department)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
+  if (req.isConsole) {
+    Department.create(department)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(
           err.message || `Some error occurred while creating the Department.`,
+        );
       });
-    });
+  } else {
+    Department.create(department)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || `Some error occurred while creating the Department.`,
+        });
+      });
+  }
 };
 
 exports.findAll = (req, res) => {

@@ -15,17 +15,28 @@ exports.create = (req, res) => {
     name: req.body.name,
     level: req.body.level,
   };
-
-  Positions.create(position)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
+  if (req.isConsole) {
+    Positions.create(position)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(
           err.message || `Some error occurred while creating the Department.`,
+        );
       });
-    });
+  } else {
+    Positions.create(position)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || `Some error occurred while creating the Department.`,
+        });
+      });
+  }
 };
 
 exports.findAll = (req, res) => {

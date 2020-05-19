@@ -17,6 +17,7 @@ exports.create = (req, res) => {
   // Create object "Proporty" for request DB
   const option = {
     name: req.body.name,
+    level: req.body.level,
     categoryId: req.body.categoryId,
   };
 

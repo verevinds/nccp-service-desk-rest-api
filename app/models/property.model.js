@@ -35,6 +35,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       field: 'priority_id',
     },
+    level: {
+      type: Sequelize.INTEGER,
+    },
   });
   return Property;
 };

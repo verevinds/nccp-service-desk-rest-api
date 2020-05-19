@@ -35,15 +35,28 @@ exports.create = (req, res) => {
   };
 
   // Save Users in the database
-  User.create(users)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || `Some error occurred while creating the Users.`,
+  if (req.isConsole) {
+    User.create(users)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(
+          err.message || `Some error occurred while creating the Users.`,
+        );
       });
-    });
+  } else {
+    User.create(users)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || `Some error occurred while creating the Users.`,
+        });
+      });
+  }
 };
 
 // Retrieve all Userss from the database

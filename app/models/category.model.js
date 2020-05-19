@@ -31,6 +31,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       field: 'department_id',
     },
+    level: {
+      type: Sequelize.INTEGER,
+    },
   });
   return Category;
 };

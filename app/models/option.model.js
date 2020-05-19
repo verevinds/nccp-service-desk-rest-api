@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       field: 'category_id',
     },
+    level: {
+      type: Sequelize.INTEGER,
+    },
   });
 
   return Option;

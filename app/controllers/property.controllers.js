@@ -19,6 +19,7 @@ exports.create = (req, res) => {
     name: req.body.name,
     categoryId: req.body.categoryId,
     priorityId: req.body.priorityId,
+    level: req.body.level,
   };
 
   //* Сохранение объекта Property в базу данных
