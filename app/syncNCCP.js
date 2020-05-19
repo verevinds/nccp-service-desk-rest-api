@@ -3,6 +3,7 @@ module.exports = async function syncNCCP() {
   const positions = require('./controllers/position.controllers');
   const departments = require('./controllers/department.controllers');
   const users = require('./controllers/user.controllers');
+  const status = require('./controllers/status.constrollers');
 
   await (() => {
     axios
@@ -86,5 +87,21 @@ module.exports = async function syncNCCP() {
         }
       })
       .catch((err) => console.log(err.message));
+  })();
+  await (() => {
+    let data = {
+      body: {
+        id: 8388608,
+        name: 'Готово',
+        noChange: true,
+      },
+      isConsole: true,
+    };
+
+    status.create(data);
+
+    data.body.id = 1;
+    data.body.name = 'В работе';
+    status.create(data);
   })();
 };

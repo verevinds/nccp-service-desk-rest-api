@@ -20,16 +20,28 @@ exports.create = (req, res) => {
   };
 
   // Save status in the database
-  Status.create(status)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
+  if (req.isConsole) {
+    Status.create(status)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(
           err.message || `Some error occurred while creating the status.`,
+        );
       });
-    });
+  } else {
+    Status.create(status)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || `Some error occurred while creating the status.`,
+        });
+      });
+  }
 };
 
 // Retrieve all statuss from the database

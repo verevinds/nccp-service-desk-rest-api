@@ -71,4 +71,4 @@ app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
 
-syncNCCP();
+// syncNCCP();
