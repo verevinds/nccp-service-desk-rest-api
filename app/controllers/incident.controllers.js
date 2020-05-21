@@ -59,13 +59,13 @@ exports.findAll = (req, res) => {
   userNumber ? Object.assign(where, { userNumber }) : null;
   history
     ? Object.assign(where, {
-        statusId: '8388608',
-      })
+      statusId: '8388608',
+    })
     : Object.assign(where, {
-        statusId: {
-          [Op.ne]: '8388608',
-        },
-      });
+      statusId: {
+        [Op.ne]: '8388608',
+      },
+    });
   departmentId ? Object.assign(whereCategory, { departmentId }) : null;
 
   Incident.findAll({
@@ -86,7 +86,7 @@ exports.findAll = (req, res) => {
     ],
   })
     .then((data) => {
-      console.log('where', where);
+      // console.log('where', where);
       console.log('whereCategory', whereCategory);
       res.send(data);
     })
@@ -161,4 +161,4 @@ exports.delete = (req, res) => {
 };
 
 // Delete all Incidents from the database
-exports.deleteAll = (req, res) => {};
+exports.deleteAll = (req, res) => { };

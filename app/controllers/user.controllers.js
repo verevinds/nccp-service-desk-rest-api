@@ -38,7 +38,7 @@ exports.create = (req, res) => {
   if (req.isConsole) {
     User.create(users)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => {
         console.log(
@@ -67,10 +67,10 @@ exports.findAll = (req, res) => {
   var condition = name
     ? { name: { [Op.like]: `%${name}%` } }
     : departmentId
-    ? { departmentId }
-    : number
-    ? { number }
-    : null;
+      ? { departmentId }
+      : number
+        ? { number }
+        : null;
 
   User.findAll({ where: condition, include: [Department, Position] })
     .then((data) => {

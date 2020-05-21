@@ -20,7 +20,7 @@ exports.create = (req, res) => {
   if (req.isConsole) {
     Department.create(department)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => {
         console.log(

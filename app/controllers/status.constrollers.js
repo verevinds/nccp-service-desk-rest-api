@@ -23,7 +23,7 @@ exports.create = (req, res) => {
   if (req.isConsole) {
     Status.create(status)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => {
         console.log(

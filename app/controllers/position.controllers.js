@@ -18,7 +18,7 @@ exports.create = (req, res) => {
   if (req.isConsole) {
     Positions.create(position)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => {
         console.log(
