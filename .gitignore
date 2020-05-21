@@ -1,3 +1,10 @@
 node_modules
 yarn.lock
 package-lock.json
+nccp-service-desk-client/public
+nccp-service-desk-client/src
+nccp-service-desk-client/.gitignore
+nccp-service-desk-client/package-lock.json
+nccp-service-desk-client/package.json
+nccp-service-desk-client/README.md
+nccp-service-desk-client/tsconfig.json

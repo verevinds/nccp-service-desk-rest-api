@@ -6,20 +6,20 @@ const syncNCCP = require('./app/syncNCCP');
 const cronJob = require('cron').CronJob;
 const app = express();
 
-var whitelist = [
-  'http://localhost:5000',
-  'http://localhost:8081',
-  'http://192.168.214.106:5000',
-];
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
+// var whitelist = [
+//   'http://localhost:5000',
+//   'http://localhost:8081',
+//   'http://192.168.214.106:5000',
+// ];
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+// };
 //! Создать переменную с настройками для cors
 // Create a variable with settings for cors
 // const corsOptions = {
@@ -30,7 +30,7 @@ var corsOptions = {
 // Connect to cors app with corsOptions settings
 // app.use(cors());
 // app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
 //! Разбор запросов типа content-type - application/json
 // Parse requests of content-type - application/json
