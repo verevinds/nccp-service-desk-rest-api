@@ -1,8 +1,10 @@
-const app = require('express')();
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 const syncNCCP = require('./app/syncNCCP');
 const cronJob = require('cron').CronJob;
+const app = express();
 
 var whitelist = [
   'http://localhost:5000',
@@ -28,6 +30,7 @@ var corsOptions = {
 // Connect to cors app with corsOptions settings
 // app.use(cors());
 // app.use(cors(corsOptions));
+app.use(express.static(path.join(__dirname, 'build')));
 
 //! Разбор запросов типа content-type - application/json
 // Parse requests of content-type - application/json
@@ -68,5 +71,6 @@ app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
 // new cronJob('* * */24 */1 * *', syncNCCP());
-new cronJob('* */5 9-18 * * *', () => { syncNCCP() });
-
+new cronJob('* */5 9-18 * * *', () => {
+  syncNCCP();
+});
