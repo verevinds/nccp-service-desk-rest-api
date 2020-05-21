@@ -1,6 +1,7 @@
 node_modules
 yarn.lock
 package-lock.json
+nccp-service-desk-client/node_modules
 nccp-service-desk-client/public
 nccp-service-desk-client/src
 nccp-service-desk-client/.gitignore

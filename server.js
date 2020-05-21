@@ -7,9 +7,10 @@ const cronJob = require('cron').CronJob;
 const app = express();
 
 // var whitelist = [
-//   'http://localhost:5000',
+//   'http://localhost:80',
 //   'http://localhost:8081',
-//   'http://192.168.214.106:5000',
+//   'http://192.168.213.77:80',
+//   'http://192.168.214.106:8081',
 // ];
 // var corsOptions = {
 //   origin: function (origin, callback) {
@@ -63,13 +64,14 @@ require('./app/routes')(app);
 
 //! Определить номер порта на котором будет запущено приложение
 // Determine the port number on which the application will run
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 80;
 
-//! Начать прослушивать на выбранном порту
-// Start listen on the selected port
+// // //! Начать прослушивать на выбранном порту
+// // // Start listen on the selected port
 app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
+
 // new cronJob('* * */24 */1 * *', syncNCCP());
 new cronJob('* */5 9-18 * * *', () => {
   syncNCCP();
