@@ -60,27 +60,22 @@ const upload = require('express-fileupload');
 const { v1 } = require('uuid');
 const fs = require('fs');
 
-app.use(express.static(path.join(__dirname, '/upload')));
-app.get('/upload', (req, res) => {
-  let filename = req.query.filename;
-  res.sendFile(__dirname, `./upload/${filename}`);
-});
-
 app.use(upload());
 app.post('/upload', (req, res, next) => {
   console.log(req.files);
   if (req.files) {
+    console.log(req.files);
     let file = req.files.file;
     let filename = file.name;
     let md5 = file.md5;
     file.mv(`./upload/${v1()}.${filename}`, (err) => {
       if (err) {
-        console.lof(err);
+        console.log(err);
         res.send('error occured');
       } else {
         res.send({
           message: `Файл ${filename} успешно добавлен`,
-          url: `http://192.168.213.77/upload/${v1()}.${filename}`,
+          url: `http://192.168.213.77/restapi/upload/${v1()}.${filename}`,
           filename,
         });
       }
