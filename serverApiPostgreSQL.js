@@ -1,36 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const path = require('path');
 const syncNCCP = require('./app/syncNCCP');
 const cronJob = require('cron').CronJob;
 const app = express();
+const cors = require('cors');
 
-// var whitelist = [
-//   'http://localhost:80',
-//   'http://localhost:8081',
-//   'http://192.168.213.77:80',
-//   'http://192.168.214.106:8081',
-// ];
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// };
-//! Создать переменную с настройками для cors
-// Create a variable with settings for cors
-// const corsOptions = {
-//   origin: 'http://localhost:5000',
-// };
+var whitelist = [
+  'http://localhost',
+  'http://localhost:8081',
+  'http://192.168.214.106:8081',
+];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-// app.use(cors());
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
 //! Разбор запросов типа content-type - application/json
@@ -48,7 +41,6 @@ const db = require('./app/models');
 //! Подключиться к базе данных
 // Connect of database
 db.sequelize.sync();
-
 //    In development, you may need to drop existing tables and re-sync database.
 //    Just use force: true as following code:
 //?    При разработке может потребоваться удалить существующие таблицы и выполнить
@@ -72,7 +64,37 @@ app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
 
-// new cronJob('* * */24 */1 * *', syncNCCP());
 new cronJob('* */5 9-18 * * *', () => {
   syncNCCP();
+});
+
+////////////////////////////////////////////////////////////////////////
+
+const http = require('http');
+
+const server = http.createServer(app);
+
+const sio = require('socket.io')(server, {
+  handlePreflightRequest: (req, res) => {
+    const headers = {
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Origin': req.headers.origin, //or the specific origin you want to give access to,
+      'Access-Control-Allow-Credentials': true,
+    };
+    res.writeHead(200, headers);
+    res.end();
+  },
+});
+
+sio.on('connection', (client) => {
+  console.log('Connected!');
+  client.on('newIncident', (data) => {
+    console.log('newIncident: ', String(data));
+    client.broadcast.emit(String(data), 'update');
+  });
+});
+
+const port = 8000;
+server.listen(port, () => {
+  console.log('WebSocket listening on PORT ', port);
 });

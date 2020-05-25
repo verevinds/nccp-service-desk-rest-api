@@ -10,4 +10,5 @@ module.exports = (app) => {
   require('./incident.routes')(app);
   require('./status.routes')(app);
   require('./comment.routes')(app);
+  require('./access.routes')(app);
 };

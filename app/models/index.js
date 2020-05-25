@@ -6,10 +6,6 @@ const {
   dialect,
   pool,
 } = require('../config/db.config');
-const io = require('socket.io')();
-
-const WebSocket = require('../../ws/index');
-WebSocket(io);
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(DB, USER, PASSWORD, {
   host: HOST,
@@ -36,7 +32,7 @@ db.sequelize = sequelize;
   db.incidents = require('./incident.model')(sequelize, Sequelize);
   db.status = require('./status.model')(sequelize, Sequelize);
   db.comments = require('./comment.model')(sequelize, Sequelize);
-  db.io = io;
+  db.access = require('./access.model')(sequelize, Sequelize);
 }
 
 {

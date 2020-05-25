@@ -1,5 +1,8 @@
 module.exports = (io) => {
-  const port = 8000;
-  io.listen(port);
-  console.log('listening on port ', port);
+  io.on('connection', (socket) => {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', (data) => {
+      console.log(data);
+    });
+  });
 };

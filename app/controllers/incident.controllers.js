@@ -37,9 +37,9 @@ exports.create = (req, res) => {
   Incident.create(incident)
     .then((data) => {
       res.send(data);
-      io.on('connection', (client) => {
-        client.broadcast.emit(String(incident.departmentId), 'update');
-      });
+      // io.on('connection', (client) => {
+      //   client.broadcast.emit(String(incident.departmentId), data);
+      // });
     })
     .catch((err) => {
       res.status(500).send({
