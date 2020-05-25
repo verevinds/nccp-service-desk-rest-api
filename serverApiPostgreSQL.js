@@ -8,6 +8,7 @@ const cors = require('cors');
 
 var whitelist = [
   'http://localhost',
+  'http://192.168.213.77',
   'http://localhost:8081',
   'http://192.168.214.106:8081',
 ];
@@ -54,9 +55,43 @@ db.sequelize.sync();
 // Import & start routes
 require('./app/routes')(app);
 
+/////////////////Загрузка файлов////////////////////////////
+const upload = require('express-fileupload');
+const { v1 } = require('uuid');
+const fs = require('fs');
+
+app.use(express.static(path.join(__dirname, '/upload')));
+app.get('/upload', (req, res) => {
+  let filename = req.query.filename;
+  res.sendFile(__dirname, `./upload/${filename}`);
+});
+
+app.use(upload());
+app.post('/upload', (req, res, next) => {
+  console.log(req.files);
+  if (req.files) {
+    let file = req.files.file;
+    let filename = file.name;
+    let md5 = file.md5;
+    file.mv(`./upload/${v1()}.${filename}`, (err) => {
+      if (err) {
+        console.lof(err);
+        res.send('error occured');
+      } else {
+        res.send({
+          message: `Файл ${filename} успешно добавлен`,
+          url: `http://192.168.213.77/upload/${v1()}.${filename}`,
+          filename,
+        });
+      }
+    });
+  }
+});
+///////////////////////////////////////////
+
 //! Определить номер порта на котором будет запущено приложение
 // Determine the port number on which the application will run
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 
 // // //! Начать прослушивать на выбранном порту
 // // // Start listen on the selected port
