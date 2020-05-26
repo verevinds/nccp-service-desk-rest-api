@@ -33,6 +33,7 @@ db.sequelize = sequelize;
   db.status = require('./status.model')(sequelize, Sequelize);
   db.comments = require('./comment.model')(sequelize, Sequelize);
   db.access = require('./access.model')(sequelize, Sequelize);
+  db.files = require('./files.model')(sequelize, Sequelize);
 }
 
 {
@@ -113,6 +114,19 @@ db.sequelize = sequelize;
   // // Implement associations "One-To-One" between table Incident to Positions
   db.users.hasMany(db.comments);
   db.comments.belongsTo(db.users, {
+    foreignKey: 'userNumber',
+    targetKey: 'number',
+    as: 'user',
+  });
+
+  //! Осуществить связь One-To-Many между incidents-files
+  // Implement associations "One-To-Many" between table incidents-files
+  db.incidents.hasMany(db.files);
+  db.files.belongsTo(db.incidents);
+  // //! Осуществить связь One-To-Many между users-files
+  // // Implement associations "One-To-Many" between table  users-files
+  db.users.hasMany(db.files);
+  db.files.belongsTo(db.users, {
     foreignKey: 'userNumber',
     targetKey: 'number',
     as: 'user',

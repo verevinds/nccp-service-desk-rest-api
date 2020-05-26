@@ -1,7 +1,7 @@
 const db = require('../models');
 const Incident = db.incidents;
 const Department = db.departments;
-const Position = db.positions;
+const Files = db.files;
 const Category = db.categories;
 const Property = db.properties;
 const CommentIncident = db.comments;
@@ -59,13 +59,13 @@ exports.findAll = (req, res) => {
   userNumber ? Object.assign(where, { userNumber }) : null;
   history
     ? Object.assign(where, {
-      statusId: '8388608',
-    })
+        statusId: '8388608',
+      })
     : Object.assign(where, {
-      statusId: {
-        [Op.ne]: '8388608',
-      },
-    });
+        statusId: {
+          [Op.ne]: '8388608',
+        },
+      });
   departmentId ? Object.assign(whereCategory, { departmentId }) : null;
 
   Incident.findAll({
@@ -80,6 +80,7 @@ exports.findAll = (req, res) => {
       },
       Property,
       Option,
+      { model: Files, include: [{ model: User, as: 'user' }] },
       { model: User, as: 'initiatorUser' },
       { model: User, as: 'responsibleUser' },
       { model: CommentIncident, include: [{ model: User, as: 'user' }] },
@@ -161,4 +162,19 @@ exports.delete = (req, res) => {
 };
 
 // Delete all Incidents from the database
-exports.deleteAll = (req, res) => { };
+exports.deleteAll = (req, res) => {
+  Incident.destroy({
+    where: {},
+    truncate: false,
+  })
+    .then((nums) => {
+      res.send({
+        message: `${nums} Files were deleted successfully!`,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while removing all Files.',
+      });
+    });
+};

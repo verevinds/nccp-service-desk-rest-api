@@ -11,4 +11,5 @@ module.exports = (app) => {
   require('./status.routes')(app);
   require('./comment.routes')(app);
   require('./access.routes')(app);
+  require('./files.routes')(app);
 };
