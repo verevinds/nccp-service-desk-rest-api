@@ -1,6 +1,10 @@
 const db = require('../models');
 const Positions = db.positions;
-const Op = db.sequelize.Op;
+const Op = db.Sequelize.Op;
+const {
+  toFirstLettersUppercase,
+  toLetterUppercase,
+} = require('../../js/textFormat');
 
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -40,7 +44,16 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Positions.findAll()
+  const name = req.query.filter;
+
+  const where = name
+    ? {
+        name: Op.filter(name),
+      }
+    : null;
+
+  console.log();
+  Positions.findAll({ where })
     .then((data) => {
       res.send(data);
     })

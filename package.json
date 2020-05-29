@@ -43,5 +43,8 @@
     "socket.io": "^2.3.0",
     "uuid": "^8.1.0",
     "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }

@@ -41,6 +41,10 @@ module.exports = (sequelize, Sequelize) => {
     consent: {
       type: Sequelize.BOOLEAN,
     },
+    isArchive: {
+      type: Sequelize.BOOLEAN,
+      field: 'is_archive',
+    },
   });
 
   return Incident;

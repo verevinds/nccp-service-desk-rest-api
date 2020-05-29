@@ -68,6 +68,7 @@ exports.findAll = (req, res) => {
       });
   departmentId ? Object.assign(whereCategory, { departmentId }) : null;
 
+  console.log('where', where);
   Incident.findAll({
     where,
     include: [

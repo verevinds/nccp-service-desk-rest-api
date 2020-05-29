@@ -12,7 +12,8 @@ module.exports = (app) => {
   router.get('/:userNumber', access.findOne);
 
   // Update a Category with id
-  router.put('/:id', access.update);
+  router.put('/:userNumber', access.update);
+  router.delete('/:userNumber', access.delete);
 
   app.use('/api/access', router);
 };

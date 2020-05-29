@@ -18,7 +18,7 @@ const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-
+require('../opModify')(db.Sequelize.Op);
 {
   //FIXME: провести рефакторинг кода для сокращения объема
   db.users = require('./user.model.js')(sequelize, Sequelize);
@@ -56,6 +56,10 @@ db.sequelize = sequelize;
   // Implement associations "One-To-One" between table Auth to User
   db.users.hasOne(db.auths);
   db.auths.belongsTo(db.users);
+  //! Осуществить связь One-To-Many между users-access
+  // Implement associations "One-To-Many" between table users-access
+  db.users.hasMany(db.access);
+  db.access.belongsTo(db.users);
 
   //! Осуществить связь One-To-Many между Category-Property
   // Implement associations "One-To-Many" between table Category to Property

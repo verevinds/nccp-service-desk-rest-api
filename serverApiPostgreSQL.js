@@ -57,41 +57,10 @@ require('./app/routes')(app);
 
 /////////////////Загрузка файлов////////////////////////////
 const upload = require('express-fileupload');
-const { v1 } = require('uuid');
-const fs = require('fs');
+const fileUpload = require('./fileUpload');
 
 app.use(upload());
-app.post('/upload', (req, res, next) => {
-  console.log(req.files);
-  if (req.files) {
-    console.log(req.files);
-    let file = req.files.file;
-    let uuid = Math.random(4000);
-    let filename = file.name;
-    let name = `${uuid}.${filename}`;
-
-    file.mv(`./upload/${name}`, (err) => {
-      if (err) {
-        console.log(err);
-        res.send('error occured');
-      } else {
-        console.log('ok');
-
-        res.send({
-          message: `Файл ${filename} успешно загружен`,
-          url: `http://192.168.213.77/restapi/upload/${name}`,
-          filename,
-          wasFile: true,
-        });
-      }
-    });
-  } else {
-    res.send({
-      message: `Файл отсутствует`,
-      wasFile: false,
-    });
-  }
-});
+app.post('/upload', fileUpload);
 ///////////////////////////////////////////
 
 //! Определить номер порта на котором будет запущено приложение
@@ -104,10 +73,13 @@ app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
 });
 
-new cronJob('* */5 9-18 * * *', () => {
-  syncNCCP();
-});
-
+/** Создать расписание CRON: каждый день с 9-10 утра */
+// const cron = new cronJob('* */58 11-12 * * *', () => {
+//   console.log('run CRON');
+//   syncNCCP();
+//   console.log('stop CRON');
+// });
+// cron.start();
 ////////////////////////////////////////////////////////////////////////
 
 const http = require('http');
@@ -127,7 +99,6 @@ const sio = require('socket.io')(server, {
 });
 
 sio.on('connection', (client) => {
-  console.log('Connected!');
   client.on('newIncident', (data) => {
     console.log('newIncident: ', String(data));
     client.broadcast.emit(String(data), 'update');

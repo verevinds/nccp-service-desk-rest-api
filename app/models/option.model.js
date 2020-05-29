@@ -28,6 +28,10 @@ module.exports = (sequelize, Sequelize) => {
     level: {
       type: Sequelize.INTEGER,
     },
+    isArchive: {
+      type: Sequelize.BOOLEAN,
+      field: 'is_archive',
+    },
   });
 
   return Option;

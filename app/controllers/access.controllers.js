@@ -57,23 +57,45 @@ exports.findOne = (req, res) => {
     });
 };
 exports.update = (req, res) => {
-  const id = req.params.id;
+  const userNumber = req.params.userNumber;
 
-  Access.update(req.body, { where: { id } })
+  Access.update(req.body, { where: { userNumber } })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: `Categories was update successfully`,
+          message: `Access was update successfully`,
         });
       } else {
         res.send({
-          message: `Cannot update Categories with id=${id}. Maybe Categories was not found or req.body is empty!`,
+          message: `Cannot update Access with id=${id}. Maybe Access was not found or req.body is empty!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Error update Categories with id=${id}`,
+        message: `Error update Access with id=${id}`,
+      });
+    });
+};
+// Delete a Access with the specified id in the request
+exports.delete = (req, res) => {
+  const userNumber = req.params.userNumber;
+
+  Access.destroy({ where: { userNumber } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Access was deleted successfully!`,
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Access with id=${id}. Maybe Access was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Could not delete Access with id=${id}`,
       });
     });
 };

@@ -2,6 +2,7 @@ const db = require('../models');
 const User = db.users;
 const Department = db.departments;
 const Position = db.positions;
+const Access = db.access;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Users
@@ -61,18 +62,18 @@ exports.create = (req, res) => {
 
 // Retrieve all Userss from the database
 exports.findAll = (req, res) => {
-  const name = req.query.name1;
+  const name = req.query.filter;
   const departmentId = req.query.departmentId;
   const number = req.query.number;
   var condition = name
-    ? { name: { [Op.like]: `%${name}%` } }
+    ? { name1: Op.filter(name) }
     : departmentId
-      ? { departmentId }
-      : number
-        ? { number }
-        : null;
+    ? { departmentId }
+    : number
+    ? { number }
+    : null;
 
-  User.findAll({ where: condition, include: [Department, Position] })
+  User.findAll({ where: condition, include: [Department, Position, Access] })
     .then((data) => {
       res.send(data);
     })
