@@ -34,6 +34,7 @@ require('../opModify')(db.Sequelize.Op);
   db.comments = require('./comment.model')(sequelize, Sequelize);
   db.access = require('./access.model')(sequelize, Sequelize);
   db.files = require('./files.model')(sequelize, Sequelize);
+  db.propertyBinds = require('./propertyBind.model')(sequelize, Sequelize);
 }
 
 {
@@ -85,7 +86,26 @@ require('../opModify')(db.Sequelize.Op);
   // Implement associations "One-To-One" between table Incident to Positions
   db.properties.hasMany(db.incidents);
   db.incidents.belongsTo(db.properties);
-
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.properties.hasMany(db.propertyBinds, {
+    foreignKey: 'propertyId',
+    targetKey: 'id',
+    as: 'bind',
+  });
+  db.propertyBinds.belongsTo(db.properties);
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.options.hasMany(db.propertyBinds, {
+    foreignKey: 'optionId',
+    targetKey: 'id',
+    as: 'bind',
+  });
+  db.propertyBinds.belongsTo(db.options, {
+    foreignKey: 'optionId',
+    targetKey: 'id',
+    as: 'item',
+  });
   //! Осуществить связь One-To-One между Incident-Option
   // Implement associations "One-To-One" between table Incident to Positions
   db.options.hasMany(db.incidents);

@@ -12,4 +12,5 @@ module.exports = (app) => {
   require('./comment.routes')(app);
   require('./access.routes')(app);
   require('./files.routes')(app);
+  require('./propertyBind.routes')(app);
 };

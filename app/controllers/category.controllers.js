@@ -2,6 +2,7 @@ const db = require('../models');
 const Category = db.categories;
 const Property = db.properties;
 const Option = db.options;
+const PropertyBind = db.propertyBinds;
 const Op = db.Sequelize.Op;
 
 //Create and Save a new Categories
@@ -37,7 +38,62 @@ exports.findAll = (req, res) => {
   const name = req.query.name1;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Category.findAll({ where: condition, include: [Property, Option] })
+  Category.findAll({
+    where: condition,
+    include: [
+      {
+        model: Property,
+        include: [
+          {
+            model: PropertyBind,
+            as: 'bind',
+            include: [
+              {
+                model: Option,
+                as: 'item',
+                attributes: ['id', 'name', 'isArchive'],
+              },
+            ],
+            attributes: ['id'],
+          },
+        ],
+        attributes: [
+          'id',
+          'name',
+          'isArchive',
+          'categoryId',
+          'priorityId',
+          'level',
+          'deadline',
+        ],
+      },
+      {
+        model: Option,
+        include: [
+          {
+            model: PropertyBind,
+            as: 'bind',
+          },
+        ],
+        attributes: [
+          'id',
+          'name',
+          'categoryId',
+          'level',
+          'isArchive',
+          'deadline',
+        ],
+      },
+    ],
+    attributes: [
+      'id',
+      'name',
+      'departmentId',
+      'level',
+      'isArchive',
+      'deadline',
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

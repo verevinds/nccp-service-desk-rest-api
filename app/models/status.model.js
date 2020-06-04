@@ -10,6 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       field: 'no_change',
     },
+    isArchive: {
+      type: Sequelize.BOOLEAN,
+      field: 'is_archive',
+    },
   });
   return Status;
 };

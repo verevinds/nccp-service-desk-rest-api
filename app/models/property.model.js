@@ -42,6 +42,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       field: 'is_archive',
     },
+    deadline: {
+      type: Sequelize.INTEGER,
+    },
   });
   return Property;
 };

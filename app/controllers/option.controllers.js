@@ -1,5 +1,6 @@
 const db = require('../models');
 const Option = db.options;
+const PropertyBind = db.propertyBinds;
 const Op = db.Sequelize.Op;
 
 //! Создание и сохранение новой опции
@@ -40,7 +41,14 @@ exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Option.findAll({ where: condition })
+  Option.findAll({
+    where: condition,
+    include: [
+      {
+        model: PropertyBind,
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

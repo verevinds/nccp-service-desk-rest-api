@@ -8,9 +8,11 @@ const cors = require('cors');
 
 var whitelist = [
   'http://localhost',
-  'http://192.168.213.77',
+  'http://192.168.213.88',
   'http://localhost:8081',
   'http://192.168.214.106:8081',
+  'http://srv-sdesk.c31.nccp.ru:8080',
+  'http://srv-sdesk.c31.nccp.ru',
 ];
 var corsOptions = {
   origin: function (origin, callback) {
@@ -55,57 +57,20 @@ db.sequelize.sync();
 // Import & start routes
 require('./app/routes')(app);
 
-/////////////////Загрузка файлов////////////////////////////
-const upload = require('express-fileupload');
-const fileUpload = require('./fileUpload');
-
-app.use(upload());
-app.post('/upload', fileUpload);
-///////////////////////////////////////////
-
-//! Определить номер порта на котором будет запущено приложение
-// Determine the port number on which the application will run
-const PORT = process.env.PORT || 8080;
-
-// // //! Начать прослушивать на выбранном порту
-// // // Start listen on the selected port
-app.listen(PORT, () => {
-  console.log(`Server started on PORT ${PORT}`);
-});
-
 /** Создать расписание CRON: каждый день с 9-10 утра */
 // const cron = new cronJob('* */58 11-12 * * *', () => {
 //   console.log('run CRON');
 //   syncNCCP();
 //   console.log('stop CRON');
 // });
-// cron.start();
-////////////////////////////////////////////////////////////////////////
+// cron.start();const PORT = process.env.PORT || 80;
+const upload = require('express-fileupload');
+const fileUpload = require('./fileUpload');
 
-const http = require('http');
+app.use(upload());
+app.post('/upload', fileUpload);
 
-const server = http.createServer(app);
-
-const sio = require('socket.io')(server, {
-  handlePreflightRequest: (req, res) => {
-    const headers = {
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Allow-Origin': req.headers.origin, //or the specific origin you want to give access to,
-      'Access-Control-Allow-Credentials': true,
-    };
-    res.writeHead(200, headers);
-    res.end();
-  },
-});
-
-sio.on('connection', (client) => {
-  client.on('newIncident', (data) => {
-    console.log('newIncident: ', String(data));
-    client.broadcast.emit(String(data), 'update');
-  });
-});
-
-const port = 8000;
-server.listen(port, () => {
-  console.log('WebSocket listening on PORT ', port);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server started on PORT ${PORT}`);
 });

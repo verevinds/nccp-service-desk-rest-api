@@ -68,7 +68,6 @@ exports.findAll = (req, res) => {
       });
   departmentId ? Object.assign(whereCategory, { departmentId }) : null;
 
-  console.log('where', where);
   Incident.findAll({
     where,
     include: [
@@ -88,8 +87,6 @@ exports.findAll = (req, res) => {
     ],
   })
     .then((data) => {
-      // console.log('where', where);
-      console.log('whereCategory', whereCategory);
       res.send(data);
     })
     .catch((err) => {
@@ -164,18 +161,18 @@ exports.delete = (req, res) => {
 
 // Delete all Incidents from the database
 exports.deleteAll = (req, res) => {
-  Incident.destroy({
-    where: {},
-    truncate: false,
-  })
-    .then((nums) => {
-      res.send({
-        message: `${nums} Files were deleted successfully!`,
-      });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while removing all Files.',
-      });
-    });
+  // Incident.destroy({
+  //   where: {},
+  //   truncate: false,
+  // })
+  //   .then((nums) => {
+  //     res.send({
+  //       message: `${nums} Files were deleted successfully!`,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message: err.message || 'Some error occurred while removing all Files.',
+  //     });
+  //   });
 };

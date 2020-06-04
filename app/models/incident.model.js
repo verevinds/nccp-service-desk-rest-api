@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
       field: 'current_responsible',
     },
     text: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
     level: {
       type: Sequelize.INTEGER,
