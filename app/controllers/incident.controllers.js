@@ -43,8 +43,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while creating the Incidents`,
+        message: err.message || `Some error occurred while creating the Incidents`,
       });
     });
 };
@@ -91,8 +90,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving Incidents.`,
+        message: err.message || `Some error occurred while retrieving Incidents.`,
       });
     });
 };

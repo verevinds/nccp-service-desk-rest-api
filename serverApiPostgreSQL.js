@@ -3,16 +3,28 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const syncNCCP = require('./app/syncNCCP');
 const cronJob = require('cron').CronJob;
+var fs = require('fs');
 const app = express();
 const cors = require('cors');
+
+var http = require('http');
+var https = require('https');
 
 var whitelist = [
   'http://localhost',
   'http://192.168.213.88',
-  'http://localhost:8081',
-  'http://192.168.214.106:8081',
-  'http://srv-sdesk.c31.nccp.ru:8080',
   'http://srv-sdesk.c31.nccp.ru',
+  'http://srv-sdesk.c31.nccp.ru:8080',
+  'http://localhost',
+  'https://192.168.213.88',
+  'https://srv-sdesk.c31.nccp.ru',
+  'https://srv-sdesk.c31.nccp.ru:8080',
+  'http://192.168.213.88',
+  'http://192.168.214.106:8081',
+  'http://localhost:8081',
+  'https://192.168.213.88',
+  'https://192.168.214.106:8081',
+  'https://localhost:8081',
 ];
 var corsOptions = {
   origin: function (origin, callback) {
@@ -24,10 +36,15 @@ var corsOptions = {
   },
 };
 
+var privateKey = fs.readFileSync('./devcert.key');
+var certificate = fs.readFileSync('./devcert.crt');
+var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
+app.use(cors({ credentials: true, origin: 'https://srv-sdesk.c31.nccp.ru' }));
+// app.use(cors(corsOptions));
+
+// app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
 //! Разбор запросов типа content-type - application/json
 // Parse requests of content-type - application/json
@@ -70,7 +87,11 @@ const fileUpload = require('./fileUpload');
 app.use(upload());
 app.post('/upload', fileUpload);
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server started on PORT ${PORT}`);
-});
+// const PORT = process.env.PORT || 8080;
+// app.listen(PORT, () => {
+//   console.log(`Server started on PORT ${PORT}`);
+// });
+var httpServer = http.createServer(app);
+https.createServer(credentials, app).listen(8443);
+
+httpServer.listen(8080);
