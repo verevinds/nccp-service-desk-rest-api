@@ -91,6 +91,21 @@ app.post('/upload', fileUpload);
 // app.listen(PORT, () => {
 //   console.log(`Server started on PORT ${PORT}`);
 // });
+const auth = require('./auth');
+const { default: Axios } = require('axios');
+app.post('/auth', (req, respons) => {
+  Axios.get('http://api.nccp-eng.ru/', {
+    params: {
+      method: 'auth.start',
+      body: req.body,
+    },
+  }).then((res) => {
+    console.log(res.data.number);
+    respons.status(200).send({ number: res.data.number });
+    // respons.send(res.data.number);
+  });
+});
+
 var httpServer = http.createServer(app);
 https.createServer(credentials, app).listen(8443);
 
