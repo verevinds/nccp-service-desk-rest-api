@@ -27,6 +27,7 @@ var whitelist = [
   'https://localhost:8081',
 ];
 var corsOptions = {
+  credentials: true,
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
@@ -41,8 +42,8 @@ var certificate = fs.readFileSync('./devcert.crt');
 var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-app.use(cors({ credentials: true, origin: 'https://srv-sdesk.c31.nccp.ru' }));
-// app.use(cors(corsOptions));
+// app.use(cors({ credentials: true, origin: 'http://192.168.214.106:8081' }));
+app.use(cors(corsOptions));
 
 // app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
@@ -93,18 +94,7 @@ app.post('/upload', fileUpload);
 // });
 const auth = require('./auth');
 const { default: Axios } = require('axios');
-app.post('/auth', (req, respons) => {
-  Axios.get('http://api.nccp-eng.ru/', {
-    params: {
-      method: 'auth.start',
-      body: req.body,
-    },
-  }).then((res) => {
-    console.log(res.data.number);
-    respons.status(200).send({ number: res.data.number });
-    // respons.send(res.data.number);
-  });
-});
+app.get('/auth', (req, respons) => {});
 
 var httpServer = http.createServer(app);
 https.createServer(credentials, app).listen(8443);
