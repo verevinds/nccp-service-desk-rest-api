@@ -1,8 +1,12 @@
 const express = require('express');
 const app = express();
-const http = require('http');
+const https = require('https');
+var fs = require('fs');
 
-const server = http.createServer(app);
+var privateKey = fs.readFileSync('./devcert.key');
+var certificate = fs.readFileSync('./devcert.crt');
+var credentials = { key: privateKey, cert: certificate };
+const server = https.createServer(credentials, app);
 
 const sio = require('socket.io')(server, {
   handlePreflightRequest: (req, res) => {
@@ -17,7 +21,12 @@ const sio = require('socket.io')(server, {
 });
 
 sio.on('connection', (client) => {
+  console.log(`${client.conn.id}:`);
+  client.emit('newIncident', () => {
+    console.log('newIncident');
+  });
   client.on('newIncident', (data) => {
+    console.log(`${client.conn.id} newIncident:`, data);
     client.broadcast.emit(String(data.departmentId), data);
   });
 });

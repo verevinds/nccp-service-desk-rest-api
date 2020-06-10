@@ -10,12 +10,12 @@ var opts = {
   scope: 'sub',
 };
 
-module.exports = function authDN(client, dn, password, cb) {
+function authDN(client, dn, password, cb) {
   client.bind(dn, password, function (err) {
     client.unbind();
     cb(err === null, err);
   });
-};
+}
 
 function output(res, err) {
   if (res) {
@@ -26,3 +26,4 @@ function output(res, err) {
 }
 
 var client = ldap.createClient(creds);
+authDN(client, 'vds81251@c31.nccp.ru', 'Dverevin&27708817', output);

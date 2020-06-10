@@ -43,7 +43,7 @@ var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
 // app.use(cors({ credentials: true, origin: 'http://192.168.214.106:8081' }));
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
@@ -92,11 +92,10 @@ app.post('/upload', fileUpload);
 // app.listen(PORT, () => {
 //   console.log(`Server started on PORT ${PORT}`);
 // });
-const auth = require('./auth');
-const { default: Axios } = require('axios');
-app.get('/auth', (req, respons) => {});
 
 var httpServer = http.createServer(app);
-https.createServer(credentials, app).listen(8443);
+var httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(8443);
 
 httpServer.listen(8080);
