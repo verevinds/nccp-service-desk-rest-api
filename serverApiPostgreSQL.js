@@ -37,13 +37,13 @@ var corsOptions = {
   },
 };
 
-var privateKey = fs.readFileSync('./devcert.key');
-var certificate = fs.readFileSync('./devcert.crt');
+var privateKey = fs.readFileSync('./domain.key');
+var certificate = fs.readFileSync('./domain.crt');
 var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
 // app.use(cors({ credentials: true, origin: 'http://192.168.214.106:8081' }));
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 
@@ -86,7 +86,7 @@ const upload = require('express-fileupload');
 const fileUpload = require('./fileUpload');
 
 app.use(upload());
-app.post('/upload', fileUpload);
+app.post('/api/upload', fileUpload);
 
 // const PORT = process.env.PORT || 8080;
 // app.listen(PORT, () => {

@@ -56,6 +56,7 @@ exports.findAll = (req, res) => {
   const departmentId = req.query.departmentId;
   const history = req.query.history;
   userNumber ? Object.assign(where, { userNumber }) : null;
+  departmentId ? Object.assign(where, { departmentId: departmentId }) : null;
   history
     ? Object.assign(where, {
         statusId: '8388608',
@@ -65,22 +66,45 @@ exports.findAll = (req, res) => {
           [Op.ne]: '8388608',
         },
       });
-  departmentId ? Object.assign(whereCategory, { departmentId }) : null;
-
+  console.log('WHERE', where);
   Incident.findAll({
     where,
     include: [
       { model: Department, attributes: ['name'] },
       {
         model: Category,
-        attributes: ['departmentId', 'name', 'level'],
-        required: true,
-        where: whereCategory,
+        attributes: ['name', 'level'],
       },
-      Property,
-      Option,
+      {
+        model: Property,
+        attributes: ['name', 'level'],
+      },
+      {
+        model: Option,
+        attributes: ['name', 'level'],
+      },
       { model: Files, include: [{ model: User, as: 'user' }] },
-      { model: User, as: 'initiatorUser' },
+      {
+        model: User,
+        as: 'initiatorUser',
+        attributes: [
+          'number',
+          'positionId',
+          'departmentId',
+          'fired',
+          'sex',
+          'name1',
+          'name2',
+          'name3',
+          'phone1',
+          'phone2',
+          'email',
+          'exmail',
+          'computer',
+          'dob',
+          'photo',
+        ],
+      },
       { model: User, as: 'responsibleUser' },
       { model: CommentIncident, include: [{ model: User, as: 'user' }] },
     ],

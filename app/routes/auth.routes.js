@@ -1,5 +1,8 @@
 module.exports = (app) => {
   const db = require('../models');
+  const Department = db.departments;
+  const Position = db.positions;
+  const Access = db.access;
   let router = require('express').Router();
 
   router.post('/', (req, response) => {
@@ -27,7 +30,7 @@ module.exports = (app) => {
     function output(res, err) {
       if (res) {
         console.log('success');
-        db.users.findOne({ where: { email: login } }).then((data) => {
+        db.users.findOne({ where: { email: login }, include: [Department, Position, Access] }).then((data) => {
           response.send(data);
         });
       } else {
