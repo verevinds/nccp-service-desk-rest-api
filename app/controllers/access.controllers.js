@@ -21,8 +21,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while creating the Access.`,
+        message: err.message || `Some error occurred while creating the Access.`,
       });
     });
 };
@@ -34,8 +33,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving tuttorials.`,
+        message: err.message || `Some error occurred while retrieving tuttorials.`,
       });
     });
 };
@@ -80,8 +78,10 @@ exports.update = (req, res) => {
 // Delete a Access with the specified id in the request
 exports.delete = (req, res) => {
   const userNumber = req.params.userNumber;
+  const access = req.query.access;
+  console.log('where', { userNumber, access });
 
-  Access.destroy({ where: { userNumber } })
+  Access.destroy({ where: { userNumber, access } })
     .then((num) => {
       if (num == 1) {
         res.send({
@@ -89,13 +89,13 @@ exports.delete = (req, res) => {
         });
       } else {
         res.send({
-          message: `Cannot delete Access with id=${id}. Maybe Access was not found!`,
+          message: `Cannot delete Access with id=${userNumber}. Maybe Access was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: `Could not delete Access with id=${id}`,
+        message: `Could not delete Access with id=${userNumber}`,
       });
     });
 };

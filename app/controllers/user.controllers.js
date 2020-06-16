@@ -42,9 +42,7 @@ exports.create = (req, res) => {
         // console.log(data);
       })
       .catch((err) => {
-        console.log(
-          err.message || `Some error occurred while creating the Users.`,
-        );
+        console.log(err.message || `Some error occurred while creating the Users.`);
       });
   } else {
     User.create(users)
@@ -53,8 +51,7 @@ exports.create = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message:
-            err.message || `Some error occurred while creating the Users.`,
+          message: err.message || `Some error occurred while creating the Users.`,
         });
       });
   }
@@ -65,13 +62,7 @@ exports.findAll = (req, res) => {
   const name = req.query.filter;
   const departmentId = req.query.departmentId;
   const number = req.query.number;
-  var condition = name
-    ? { name1: Op.filter(name) }
-    : departmentId
-    ? { departmentId }
-    : number
-    ? { number }
-    : null;
+  var condition = name ? { name1: Op.filter(name) } : departmentId ? { departmentId } : number ? { number } : null;
 
   User.findAll({ where: condition, include: [Department, Position, Access] })
     .then((data) => {
@@ -88,7 +79,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const number = req.params.id;
 
-  User.findByPk(number)
+  User.findOne({ where: { number }, include: [Access] })
     .then((data) => {
       res.send(data);
     })
@@ -158,8 +149,7 @@ exports.deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || 'Some error occurred while removing all Userss.',
+        message: err.message || 'Some error occurred while removing all Userss.',
       });
     });
 };

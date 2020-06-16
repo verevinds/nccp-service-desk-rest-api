@@ -34,6 +34,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
     "express-force-ssl": "^0.3.2",
+    "greenlock-express": "^4.0.3",
     "http-proxy-middleware": "^1.0.4",
     "ip": "^1.1.5",
     "ldapjs": "^2.0.0",
