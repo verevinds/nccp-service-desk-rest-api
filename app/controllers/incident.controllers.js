@@ -22,6 +22,7 @@ exports.create = (req, res) => {
   //Create object "Incident" for request DB
   const incident = {
     startWork: req.body.startWork,
+    finishWork: req.body.finishWork,
     currentResponsible: req.body.currentResponsible,
     text: req.body.text,
     level: req.body.level,

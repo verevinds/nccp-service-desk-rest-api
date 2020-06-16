@@ -32,8 +32,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occured while creating the Property`,
+        message: err.message || `Some error occured while creating the Property`,
       });
     });
 };
@@ -65,7 +64,19 @@ exports.findAll = (req, res) => {
 
 //! Поиск одного Свойства по id
 // Find a single Property with an id
-exports.findOne = (req, res) => {};
+exports.findOne = (req, res) => {
+  const id = req.params.id;
+
+  Property.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Error retrieving Users with id=${id}`,
+      });
+    });
+};
 
 //! Обновление Свойства определенного по id из запроса
 // Update a Property by the id in the request

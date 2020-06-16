@@ -4,6 +4,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       field: 'start_work',
     },
+    finishWork: {
+      type: Sequelize.DATE,
+      field: 'finish_work',
+    },
+    doneWork: {
+      type: Sequelize.DATE,
+      field: 'done_work',
+    },
     currentResponsible: {
       type: Sequelize.INTEGER,
       field: 'current_responsible',

@@ -38,8 +38,13 @@ module.exports = (app) => {
         response.send(['Error', err.code, err.dn, err.message]);
       }
     }
+    if (!password && !login) {
+      // response.send(req.);
+      let ip = req.connection.remoteAddress;
+      ip = ip.slice(ip.lastIndexOf(':') + 1, ip.length);
+      console.log(ip);
+    } else authDN(client, login, password, output);
     if (!password) response.send(['Error']);
-    else authDN(client, login, password, output);
   });
   app.use('/api/auth', router);
 };

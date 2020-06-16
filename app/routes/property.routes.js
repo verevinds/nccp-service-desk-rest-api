@@ -10,6 +10,7 @@ module.exports = (app) => {
   //! Роуте получения всех записей в таблице "Property"
   // Route for Retrieve all "Property" from the database
   router.get('/', properties.findAll);
+  router.get('/:id', properties.findOne);
 
   //! Роуте "Property" по id
   // Delete a Property with id
