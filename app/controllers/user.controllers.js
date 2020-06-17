@@ -79,7 +79,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const number = req.params.id;
 
-  User.findOne({ where: { number }, include: [Access] })
+  User.findOne({ where: { number }, include: [Department, Position, Access] })
     .then((data) => {
       res.send(data);
     })

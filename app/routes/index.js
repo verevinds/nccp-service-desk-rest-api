@@ -13,4 +13,6 @@ module.exports = (app) => {
   require('./access.routes')(app);
   require('./files.routes')(app);
   require('./propertyBind.routes')(app);
+  require('./catalog.routes')(app);
+  require('./match.routes')(app);
 };

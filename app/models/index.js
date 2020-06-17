@@ -1,11 +1,4 @@
-const {
-  DB,
-  USER,
-  PASSWORD,
-  HOST,
-  dialect,
-  pool,
-} = require('../config/db.config');
+const { DB, USER, PASSWORD, HOST, dialect, pool } = require('../config/db.config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(DB, USER, PASSWORD, {
   host: HOST,
@@ -35,6 +28,7 @@ require('../opModify')(db.Sequelize.Op);
   db.access = require('./access.model')(sequelize, Sequelize);
   db.files = require('./files.model')(sequelize, Sequelize);
   db.propertyBinds = require('./propertyBind.model')(sequelize, Sequelize);
+  db.matchs = require('./match.model')(sequelize, Sequelize);
 }
 
 {
