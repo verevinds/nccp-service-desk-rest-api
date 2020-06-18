@@ -7,6 +7,7 @@ const Property = db.properties;
 const CommentIncident = db.comments;
 const User = db.users;
 const Option = db.options;
+const Match = db.matches;
 const Op = db.Sequelize.Op;
 const io = db.io;
 
@@ -71,6 +72,7 @@ exports.findAll = (req, res) => {
   Incident.findAll({
     where,
     include: [
+      { model: Match, attributes: ['isMatch', 'id', 'incidentId', 'code', 'params'] },
       { model: Department, attributes: ['name'] },
       {
         model: Category,
@@ -124,7 +126,49 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Incident.findByPk(id)
+  Incident.findOne({
+    where: { id },
+    include: [
+      { model: Match, attributes: ['isMatch', 'id', 'incidentId', 'code', 'params'] },
+      { model: Department, attributes: ['name'] },
+      {
+        model: Category,
+        attributes: ['name', 'level'],
+      },
+      {
+        model: Property,
+        attributes: ['name', 'level'],
+      },
+      {
+        model: Option,
+        attributes: ['name', 'level'],
+      },
+      { model: Files, include: [{ model: User, as: 'user' }] },
+      {
+        model: User,
+        as: 'initiatorUser',
+        attributes: [
+          'number',
+          'positionId',
+          'departmentId',
+          'fired',
+          'sex',
+          'name1',
+          'name2',
+          'name3',
+          'phone1',
+          'phone2',
+          'email',
+          'exmail',
+          'computer',
+          'dob',
+          'photo',
+        ],
+      },
+      { model: User, as: 'responsibleUser' },
+      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

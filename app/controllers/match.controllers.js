@@ -1,5 +1,5 @@
 const db = require('../models');
-const Match = db.matchs;
+const Match = db.matches;
 
 exports.create = (req, res) => {
   if (!req.body.code) {
@@ -77,8 +77,10 @@ exports.update = (req, res) => {
 // Delete a Match with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-
-  Match.destroy({ where: { id } })
+  const incidentId = req.query.incidentId;
+  const where = id ? { id } : { incidentId };
+  console.error(where);
+  Match.destroy({ where })
     .then((num) => {
       if (num == 1) {
         res.send({

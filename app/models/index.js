@@ -28,7 +28,7 @@ require('../opModify')(db.Sequelize.Op);
   db.access = require('./access.model')(sequelize, Sequelize);
   db.files = require('./files.model')(sequelize, Sequelize);
   db.propertyBinds = require('./propertyBind.model')(sequelize, Sequelize);
-  db.matchs = require('./match.model')(sequelize, Sequelize);
+  db.matches = require('./match.model')(sequelize, Sequelize);
 }
 
 {
@@ -128,6 +128,10 @@ require('../opModify')(db.Sequelize.Op);
   // Implement associations "One-To-Many" between table Category to Property
   db.incidents.hasMany(db.comments);
   db.comments.belongsTo(db.incidents);
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.incidents.hasMany(db.matches);
+  db.matches.belongsTo(db.incidents);
   // //! Осуществить связь One-To-One между Incident-Category
   // // Implement associations "One-To-One" between table Incident to Positions
   db.users.hasMany(db.comments);

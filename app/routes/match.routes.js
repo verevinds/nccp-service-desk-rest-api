@@ -14,6 +14,7 @@ module.exports = (app) => {
   // Update a Match with id
   router.put('/:id', match.update);
   router.delete('/:id', match.delete);
+  router.delete('/', match.delete);
 
-  app.use('/api/matchs', router);
+  app.use('/api/matches', router);
 };
