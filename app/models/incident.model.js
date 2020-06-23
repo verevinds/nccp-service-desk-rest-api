@@ -53,6 +53,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       field: 'is_archive',
     },
+    params: {
+      type: Sequelize.JSONB,
+    },
   });
 
   return Incident;

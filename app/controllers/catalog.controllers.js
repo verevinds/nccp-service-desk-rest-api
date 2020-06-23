@@ -13,6 +13,7 @@ exports.findAll = (req, res) => {
         include: [
           {
             model: Property,
+            attributes: ['id', 'name', 'isArchive', 'categoryId', 'priorityId', 'level', 'deadline', 'params'],
             include: [
               {
                 model: PropertyBind,
@@ -20,14 +21,13 @@ exports.findAll = (req, res) => {
                 include: [
                   {
                     model: Option,
-                    as: 'item',
                     attributes: ['id', 'name', 'isArchive'],
+                    as: 'item',
                   },
                 ],
                 attributes: ['id'],
               },
             ],
-            attributes: ['id', 'name', 'isArchive', 'categoryId', 'priorityId', 'level', 'deadline'],
           },
           {
             model: Option,

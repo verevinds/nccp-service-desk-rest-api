@@ -21,6 +21,7 @@ exports.create = (req, res) => {
     name: req.body.name,
     categoryId: req.body.categoryId,
     priorityId: req.body.priorityId,
+    params: req.body.params,
     level: req.body.level,
   };
 
@@ -83,16 +84,20 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
+  console.error(id);
+  console.error(req.body);
   Property.update(req.body, { where: { id } })
     .then((num) => {
       if (num == 1) {
         res.send({
           message: `Property was update successfully`,
         });
+        console.error(`Property was update successfully`);
       } else {
         res.send({
           message: `Cannot update Property with id=${id}. Maybe Property was not found or req.body is empty!`,
         });
+        console.error(`Cannot update Property with id=${id}. Maybe Property was not found or req.body is empty!`);
       }
     })
     .catch((err) => {

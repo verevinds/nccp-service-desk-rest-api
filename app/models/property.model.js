@@ -45,6 +45,9 @@ module.exports = (sequelize, Sequelize) => {
     deadline: {
       type: Sequelize.INTEGER,
     },
+    params: {
+      type: Sequelize.JSONB,
+    },
   });
   return Property;
 };

@@ -15,4 +15,5 @@ module.exports = (app) => {
   require('./propertyBind.routes')(app);
   require('./catalog.routes')(app);
   require('./match.routes')(app);
+  require('./statusBind.routes')(app);
 };

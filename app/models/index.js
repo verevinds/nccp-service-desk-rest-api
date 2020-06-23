@@ -29,6 +29,7 @@ require('../opModify')(db.Sequelize.Op);
   db.files = require('./files.model')(sequelize, Sequelize);
   db.propertyBinds = require('./propertyBind.model')(sequelize, Sequelize);
   db.matches = require('./match.model')(sequelize, Sequelize);
+  db.statusBinds = require('./statusBind.model')(sequelize, Sequelize);
 }
 
 {
@@ -100,6 +101,28 @@ require('../opModify')(db.Sequelize.Op);
     targetKey: 'id',
     as: 'item',
   });
+
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.status.hasMany(db.statusBinds, {
+    foreignKey: 'statusId',
+    targetKey: 'id',
+    as: 'bind',
+  });
+  db.statusBinds.belongsTo(db.status);
+  //! Осуществить связь One-To-Many между Category-Property
+  // Implement associations "One-To-Many" between table Category to Property
+  db.categories.hasMany(db.statusBinds, {
+    foreignKey: 'categoryId',
+    targetKey: 'id',
+    as: 'bind',
+  });
+  db.statusBinds.belongsTo(db.categories, {
+    foreignKey: 'categoryId',
+    targetKey: 'id',
+    as: 'item',
+  });
+
   //! Осуществить связь One-To-One между Incident-Option
   // Implement associations "One-To-One" between table Incident to Positions
   db.options.hasMany(db.incidents);

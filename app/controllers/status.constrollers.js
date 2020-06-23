@@ -1,5 +1,7 @@
 const db = require('../models');
 const Status = db.status;
+const StatusBind = db.statusBinds;
+const Category = db.categories;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new status
@@ -26,9 +28,7 @@ exports.create = (req, res) => {
         // console.log(data);
       })
       .catch((err) => {
-        console.log(
-          err.message || `Some error occurred while creating the status.`,
-        );
+        console.log(err.message || `Some error occurred while creating the status.`);
       });
   } else {
     Status.create(status)
@@ -37,8 +37,7 @@ exports.create = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message:
-            err.message || `Some error occurred while creating the status.`,
+          message: err.message || `Some error occurred while creating the status.`,
         });
       });
   }
@@ -54,7 +53,23 @@ exports.findAll = (req, res) => {
       }
     : null;
 
-  Status.findAll({ where: condition })
+  Status.findAll({
+    where: condition,
+    include: [
+      {
+        model: StatusBind,
+        as: 'bind',
+        include: [
+          {
+            model: Category,
+            attributes: ['id', 'name', 'isArchive'],
+            as: 'item',
+          },
+        ],
+        attributes: ['id'],
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -139,8 +154,7 @@ exports.deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || 'Some error occurred while removing all statuss.',
+        message: err.message || 'Some error occurred while removing all statuss.',
       });
     });
 };

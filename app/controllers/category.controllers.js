@@ -28,8 +28,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while creating the Categories.`,
+        message: err.message || `Some error occurred while creating the Categories.`,
       });
     });
 };
@@ -57,15 +56,7 @@ exports.findAll = (req, res) => {
             attributes: ['id'],
           },
         ],
-        attributes: [
-          'id',
-          'name',
-          'isArchive',
-          'categoryId',
-          'priorityId',
-          'level',
-          'deadline',
-        ],
+        attributes: ['id', 'name', 'isArchive', 'categoryId', 'priorityId', 'level', 'deadline', 'params'],
       },
       {
         model: Option,
@@ -75,32 +66,17 @@ exports.findAll = (req, res) => {
             as: 'bind',
           },
         ],
-        attributes: [
-          'id',
-          'name',
-          'categoryId',
-          'level',
-          'isArchive',
-          'deadline',
-        ],
+        attributes: ['id', 'name', 'categoryId', 'level', 'isArchive', 'deadline'],
       },
     ],
-    attributes: [
-      'id',
-      'name',
-      'departmentId',
-      'level',
-      'isArchive',
-      'deadline',
-    ],
+    attributes: ['id', 'name', 'departmentId', 'level', 'isArchive', 'deadline'],
   })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving categories`,
+        message: err.message || `Some error occurred while retrieving categories`,
       });
     });
 };
@@ -169,8 +145,7 @@ exports.deleteAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || 'Some error occurred while removing all Category.',
+        message: err.message || 'Some error occurred while removing all Category.',
       });
     });
 };
