@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
+const http = require('http');
 const https = require('https');
 var fs = require('fs');
 
 var privateKey = fs.readFileSync('./domain.key');
 var certificate = fs.readFileSync('./domain.crt');
 var credentials = { key: privateKey, cert: certificate };
-const server = https.createServer(credentials, app);
+const server = http.createServer(credentials, app);
 
 const sio = require('socket.io')(server, {
   handlePreflightRequest: (req, res) => {
