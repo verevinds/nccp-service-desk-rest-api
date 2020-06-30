@@ -54,7 +54,6 @@ exports.create = (req, res) => {
 // Retrieve all Incidents from the database
 exports.findAll = (req, res) => {
   let where = {};
-  let whereCategory = {};
   const userNumber = req.query.userNumber;
   const departmentId = req.query.departmentId;
   const history = req.query.history;
@@ -78,7 +77,6 @@ exports.findAll = (req, res) => {
           },
         ],
       });
-  console.log('WHERE', where);
   Incident.findAll({
     where,
     include: [
@@ -198,16 +196,19 @@ exports.update = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
+          status: 200,
           message: `Incidents was update successfully`,
         });
       } else {
         res.send({
+          status: 400,
           message: `Cannot update Incidents with id=${id}. Maybe Incidents was not found or req.body is empty!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
+        status: 500,
         message: `Error update Incidents with id=${id}`,
       });
     });
