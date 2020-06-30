@@ -30,6 +30,7 @@ require('../opModify')(db.Sequelize.Op);
   db.propertyBinds = require('./propertyBind.model')(sequelize, Sequelize);
   db.matches = require('./match.model')(sequelize, Sequelize);
   db.statusBinds = require('./statusBind.model')(sequelize, Sequelize);
+  db.subscriptions = require('./subscription.model')(sequelize, Sequelize);
 }
 
 {

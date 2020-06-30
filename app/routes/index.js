@@ -16,4 +16,5 @@ module.exports = (app) => {
   require('./catalog.routes')(app);
   require('./match.routes')(app);
   require('./statusBind.routes')(app);
+  require('./subscription.routes')(app);
 };
