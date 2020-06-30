@@ -19,6 +19,7 @@ exports.create = (req, res) => {
   const option = {
     name: req.body.name,
     level: req.body.level,
+    params: req.body.params,
     categoryId: req.body.categoryId,
   };
 

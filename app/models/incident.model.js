@@ -12,6 +12,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       field: 'done_work',
     },
+    closeWork: {
+      type: Sequelize.DATE,
+      field: 'close_work',
+    },
     currentResponsible: {
       type: Sequelize.INTEGER,
       field: 'current_responsible',

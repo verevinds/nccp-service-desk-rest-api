@@ -62,12 +62,21 @@ exports.findAll = (req, res) => {
   departmentId ? Object.assign(where, { departmentId: departmentId }) : null;
   history
     ? Object.assign(where, {
-        statusId: '8388608',
+        [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
       })
     : Object.assign(where, {
-        statusId: {
-          [Op.ne]: '8388608',
-        },
+        [Op.and]: [
+          {
+            statusId: {
+              [Op.ne]: '8388604',
+            },
+          },
+          {
+            statusId: {
+              [Op.ne]: '8388608',
+            },
+          },
+        ],
       });
   console.log('WHERE', where);
   Incident.findAll({

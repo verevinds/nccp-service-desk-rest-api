@@ -37,7 +37,7 @@ exports.findAll = (req, res) => {
                 as: 'bind',
               },
             ],
-            attributes: ['id', 'name', 'categoryId', 'level', 'isArchive', 'deadline'],
+            attributes: ['id', 'name', 'categoryId', 'level', 'isArchive', 'deadline', 'params'],
           },
         ],
         attributes: ['id', 'name', 'departmentId', 'level', 'isArchive', 'deadline'],
