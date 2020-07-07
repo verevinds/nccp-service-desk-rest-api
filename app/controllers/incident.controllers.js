@@ -8,6 +8,7 @@ const CommentIncident = db.comments;
 const User = db.users;
 const Option = db.options;
 const Match = db.matches;
+const Rules = db.rules;
 const Op = db.Sequelize.Op;
 const io = db.io;
 
@@ -19,7 +20,20 @@ exports.create = (req, res) => {
     });
     return;
   }
-
+  function create(incident) {
+    Incident.create(incident)
+      .then((data) => {
+        res.send(data);
+        // io.on('connection', (client) => {
+        //   client.broadcast.emit(String(incident.departmentId), data);
+        // });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || `Some error occurred while creating the Incidents`,
+        });
+      });
+  }
   //Create object "Incident" for request DB
   const incident = {
     startWork: req.body.startWork,
@@ -37,18 +51,26 @@ exports.create = (req, res) => {
     consent: req.body.consent,
   };
 
-  Incident.create(incident)
-    .then((data) => {
-      res.send(data);
-      // io.on('connection', (client) => {
-      //   client.broadcast.emit(String(incident.departmentId), data);
-      // });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || `Some error occurred while creating the Incidents`,
-      });
+  if (!!incident.categoryId || !!incident.propertyId || !!incident.optionId) {
+    Rules.findAll({
+      where: {
+        [Op.or]: [
+          { categoryId: incident.categoryId },
+          { propertyId: incident.propertyId },
+          { optionId: incident.optionId },
+        ],
+      },
+    }).then((res) => {
+      let data = res.map((item) => item.dataValues);
+
+      console.log('-----------------');
+      console.log('data', data);
+      console.log('-----------------');
     });
+    create(incident);
+  } else {
+    create(incident);
+  }
 };
 
 // Retrieve all Incidents from the database

@@ -57,6 +57,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       field: 'is_archive',
     },
+    allowToCreate: {
+      type: Sequelize.BOOLEAN,
+      field: 'allow_to_create',
+      defaultValue: false,
+    },
     params: {
       type: Sequelize.JSONB,
     },

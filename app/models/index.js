@@ -32,6 +32,7 @@ require('../opModify')(db.Sequelize.Op);
   db.statusBinds = require('./statusBind.model')(sequelize, Sequelize);
   db.subscriptions = require('./subscription.model')(sequelize, Sequelize);
   db.responsible = require('./responsible.model')(sequelize, Sequelize);
+  db.rules = require('./rules.model')(sequelize, Sequelize);
 }
 
 {
