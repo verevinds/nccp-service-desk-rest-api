@@ -1,7 +1,7 @@
 const db = require('../models');
 const Property = db.properties;
 const PropertyBind = db.propertyBinds;
-const Options = db.options;
+const Option = db.options;
 const Op = db.Sequelize.Op;
 
 //! Создание и сохранение нового свойства
@@ -49,7 +49,14 @@ exports.findAll = (req, res) => {
     include: [
       {
         model: PropertyBind,
-        include: [{ model: Options }],
+        as: 'bind',
+        include: [
+          {
+            model: Option,
+            as: 'item',
+            attributes: ['id', 'name', 'isArchive'],
+          },
+        ],
       },
     ],
   })

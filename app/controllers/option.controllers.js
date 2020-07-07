@@ -47,6 +47,7 @@ exports.findAll = (req, res) => {
     include: [
       {
         model: PropertyBind,
+        as: 'bind',
       },
     ],
   })
