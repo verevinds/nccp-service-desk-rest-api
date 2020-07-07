@@ -24,7 +24,7 @@ module.exports = async function syncNCCP() {
           };
           positions.create(data);
         }
-        console.log('Должности обновлены')
+        console.log('Должности обновлены');
       })
       .catch((err) => {
         console.log(err.message);
@@ -48,7 +48,7 @@ module.exports = async function syncNCCP() {
           };
           departments.create(data);
         }
-        console.log('Отделы обновлены')
+        console.log('Отделы обновлены');
       })
       .catch((err) => {
         console.log(err.message);
@@ -87,7 +87,7 @@ module.exports = async function syncNCCP() {
           };
           users.create(data);
         }
-        console.log('Пользователи обновлены')
+        console.log('Пользователи обновлены');
       })
       .catch((err) => console.log(err.message));
   })();
@@ -106,7 +106,6 @@ module.exports = async function syncNCCP() {
     data.body.id = 1;
     data.body.name = 'В работе';
     status.create(data);
-    console.log('Статусы обновлены')
+    console.log('Статусы обновлены');
   })();
-
 };

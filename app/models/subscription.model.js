@@ -1,12 +1,19 @@
 module.exports = (sequelize, Sequelize) => {
   const Subscription = sequelize.define('subscription', {
+    userNumberSubscription: {
+      type: Sequelize.INTEGER,
+      field: 'user_number_subscription',
+    },
     userNumber: {
       type: Sequelize.INTEGER,
     },
     name: {
       type: Sequelize.STRING,
     },
-
+    currentResponsible: {
+      type: Sequelize.INTEGER,
+      field: 'current_responsible',
+    },
     code: {
       type: Sequelize.INTEGER,
     },

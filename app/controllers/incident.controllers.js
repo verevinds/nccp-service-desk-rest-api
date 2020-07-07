@@ -55,28 +55,77 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   let where = {};
   const userNumber = req.query.userNumber;
+
   const departmentId = req.query.departmentId;
+
+  const arrayCategoryId = req.query.arrayCategoryId;
+  const arrayPropertyId = req.query.arrayPropertyId;
+  const arrayOptionId = req.query.arrayOptionId;
+
+  console.log('------------------------');
+  console.log('arrayCategoryId', arrayCategoryId);
+  console.log('arrayPropertyId', arrayPropertyId);
+  console.log('arrayOptionId', arrayOptionId);
+  console.log('------------------------');
+  let categories = [];
+  let properties = [];
+  let options = [];
+
+  let arrayCategory = arrayCategoryId && JSON.parse(arrayCategoryId);
+  let arrayProperties = arrayPropertyId && JSON.parse(arrayPropertyId);
+  let arrayOption = arrayOptionId && JSON.parse(arrayOptionId);
+
+  if (Array.isArray(arrayCategory) && arrayCategory.length > 0)
+    arrayCategory.forEach((item) => {
+      categories.push({ categoryId: item });
+    });
+  if (Array.isArray(arrayProperties) && arrayProperties.length > 0)
+    arrayProperties.forEach((item) => {
+      properties.push({ propertyId: item });
+    });
+  if (Array.isArray(arrayOptionId) && arrayOptionId.length > 0)
+    arrayOptionId.forEach((item) => {
+      options.push({ optionId: item });
+    });
+
+  let params = [...categories, ...properties, ...options];
+
   const history = req.query.history;
   userNumber ? Object.assign(where, { userNumber }) : null;
-  departmentId ? Object.assign(where, { departmentId: departmentId }) : null;
-  history
-    ? Object.assign(where, {
-        [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
-      })
-    : Object.assign(where, {
-        [Op.and]: [
-          {
-            statusId: {
-              [Op.ne]: '8388604',
-            },
+  if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+
+  // if (params.length > 0) Object.assign(where, { [Op.or]: params });
+  if (history) {
+    let and = [];
+    if (params.length) and.push({ [Op.or]: params });
+    and.push({
+      [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
+    });
+
+    Object.assign(where, {
+      [Op.and]: and,
+    });
+  } else
+    Object.assign(where, {
+      [Op.and]: [
+        {
+          statusId: {
+            [Op.ne]: '8388604',
           },
-          {
-            statusId: {
-              [Op.ne]: '8388608',
-            },
+        },
+        {
+          statusId: {
+            [Op.ne]: '8388608',
           },
-        ],
-      });
+        },
+        { [Op.or]: params },
+      ],
+    });
+  console.log('------------------------');
+
+  console.log('params', params);
+  console.log('where', where);
+  console.log('------------------------');
   Incident.findAll({
     where,
     include: [

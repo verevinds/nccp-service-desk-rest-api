@@ -3,6 +3,7 @@ const User = db.users;
 const Department = db.departments;
 const Position = db.positions;
 const Access = db.access;
+const Responsible = db.responsible;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Users
@@ -64,7 +65,30 @@ exports.findAll = (req, res) => {
   const number = req.query.number;
   var condition = name ? { name1: Op.filter(name) } : departmentId ? { departmentId } : number ? { number } : null;
 
-  User.findAll({ where: condition, include: [Department, Position, Access] })
+  User.findAll({
+    where: condition,
+    include: [
+      Department,
+      {
+        model: Position,
+        include: [
+          {
+            model: Responsible,
+            attributes: [
+              'categoryId',
+              'departmentId',
+              'isArchive',
+              'optionId',
+              'positionId',
+              'propertyId',
+              'userNumber',
+            ],
+          },
+        ],
+      },
+      Access,
+    ],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -79,7 +103,30 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const number = req.params.id;
 
-  User.findOne({ where: { number }, include: [Department, Position, Access] })
+  User.findOne({
+    where: { number },
+    include: [
+      Department,
+      {
+        model: Position,
+        include: [
+          {
+            model: Responsible,
+            attributes: [
+              'categoryId',
+              'departmentId',
+              'isArchive',
+              'optionId',
+              'positionId',
+              'propertyId',
+              'userNumber',
+            ],
+          },
+        ],
+      },
+      Access,
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

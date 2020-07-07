@@ -78,7 +78,7 @@ require('./app/routes')(app);
 /** Создать расписание CRON: каждый день с 9-10 утра */
 // const cron = new cronJob('* */58 11-12 * * *', () => {
 //   console.log('run CRON');
-//   syncNCCP();
+// syncNCCP();
 //   console.log('stop CRON');
 // });
 // cron.start();const PORT = process.env.PORT || 80;

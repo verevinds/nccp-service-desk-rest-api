@@ -17,4 +17,5 @@ module.exports = (app) => {
   require('./match.routes')(app);
   require('./statusBind.routes')(app);
   require('./subscription.routes')(app);
+  require('./responsible.routes')(app);
 };

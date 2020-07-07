@@ -31,9 +31,13 @@ require('../opModify')(db.Sequelize.Op);
   db.matches = require('./match.model')(sequelize, Sequelize);
   db.statusBinds = require('./statusBind.model')(sequelize, Sequelize);
   db.subscriptions = require('./subscription.model')(sequelize, Sequelize);
+  db.responsible = require('./responsible.model')(sequelize, Sequelize);
 }
 
 {
+  db.positions.hasMany(db.responsible);
+  db.responsible.belongsTo(db.positions);
+
   //! Осуществить связь One-To-One между User-Departments
   // Implement associations "One-To-One" between table User to Departments
   db.departments.hasOne(db.users);

@@ -4,7 +4,10 @@ const http = require('http');
 const https = require('https');
 var fs = require('fs');
 const db = require('./app/models');
+const { default: Axios } = require('axios');
 const Incident = db.incidents;
+const Subscriptions = db.subscriptions;
+const Op = db.Sequelize.Op;
 
 var privateKey = fs.readFileSync('./domain.key');
 var certificate = fs.readFileSync('./domain.crt');
@@ -29,17 +32,72 @@ sio.on('connection', (client) => {
   client.on('newIncident', (data) => {
     console.log(`${client.conn.id} newIncident:`, data);
     client.broadcast.emit(String(data.departmentId), data);
+
+    Incident.findOne({ where: { id: data.id } }).then((res) => {
+      let { currentResponsible, departmentId, userNumber } = res.dataValues;
+
+      Subscriptions.findAll({
+        where: {
+          [Op.or]: [{ currentResponsible }, { departmentId }, { userNumber }],
+        },
+      }).then((subscription) => {
+        let subscriptions = subscription.map((item) => {
+          let { userNumberSubscription, name, code } = item.dataValues;
+
+          return userNumberSubscription;
+        });
+        let mailList = Array.from(new Set(subscriptions));
+
+        let filterMailList = mailList.filter((item) => item !== data.userNumber);
+        filterMailList.forEach((item) => {
+          Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
+            params: {
+              numbers: item,
+              from: `ServiceDesk`,
+              subject: `Заявка №${data.id}`,
+              text: `Поступила новая заявка №${data.id} http://srv-sdesk.c31.nccp.ru/
+                Отвечать на это сообщение не нужно!`,
+            },
+          }).then((res) => console.log(`Сообщение отправлено ${item}`));
+        });
+      });
+    });
   });
 
   client.on('incidentUpdate', (data) => {
     Incident.findOne({ where: { id: data.id } }).then((res) => {
       let { currentResponsible, departmentId, userNumber } = res.dataValues;
-      console.log('send');
       currentResponsible
         ? client.broadcast.emit(`updateResponsible${currentResponsible}`, res.dataValues)
         : client.broadcast.emit(`updateResponsibleDepartment${departmentId}`, res.dataValues);
 
       client.broadcast.emit(`updateIncidentOwner${userNumber}`, res.dataValues);
+
+      Subscriptions.findAll({
+        where: {
+          [Op.or]: [{ currentResponsible }, { departmentId }, { userNumber }],
+        },
+      }).then((subscription) => {
+        let subscriptions = subscription.map((item) => {
+          let { userNumberSubscription, name, code } = item.dataValues;
+
+          return userNumberSubscription;
+        });
+        let mailList = Array.from(new Set(subscriptions));
+
+        let filterMailList = mailList.filter((item) => item !== data.userNumber);
+        filterMailList.forEach((item) => {
+          Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
+            params: {
+              numbers: item,
+              from: `ServiceDesk`,
+              subject: `Заявка №${data.id}`,
+              text: `Поступили изменения по заявке №${data.id} http://srv-sdesk.c31.nccp.ru/
+                Отвечать на это сообщение не нужно!`,
+            },
+          }).then((res) => console.log(`Сообщение отправлено ${item}`));
+        });
+      });
     });
   });
 });

@@ -2,7 +2,7 @@ const db = require('../models');
 const Subscription = db.subscriptions;
 
 exports.create = (req, res) => {
-  if (!req.body.userNumber) {
+  if (!req.body.userNumberSubscription) {
     res.status(400).send({
       message: `Content can not be empty!`,
     });
@@ -11,6 +11,7 @@ exports.create = (req, res) => {
   }
 
   const subscription = {
+    userNumberSubscription: req.body.userNumberSubscription,
     userNumber: req.body.userNumber,
     code: req.body.code,
     name: req.body.name,
@@ -19,6 +20,7 @@ exports.create = (req, res) => {
     categoryId: req.body.categoryId,
     positionId: req.body.positionId,
     optionId: req.body.optionId,
+    currentResponsible: req.body.currentResponsible,
   };
 
   Subscription.create(subscription)
@@ -27,19 +29,25 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Some error occurred while creating the Subscription.`,
+        message:
+          err.message || `Some error occurred while creating the Subscription.`,
       });
     });
 };
 
 exports.findAll = (req, res) => {
-  Subscription.findAll()
+  let userNumberSubscription = req.query.userNumber;
+  let combiner = userNumberSubscription
+    ? { where: { userNumberSubscription } }
+    : undefined;
+  Subscription.findAll(combiner)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || `Some error occurred while retrieving tuttorials.`,
+        message:
+          err.message || `Some error occurred while retrieving tuttorials.`,
       });
     });
 };
