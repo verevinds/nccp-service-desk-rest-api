@@ -71,8 +71,10 @@ exports.create = (req, res) => {
     optionId: req.body.optionId,
     params: req.body.params,
     consent: req.body.consent,
-    rulesId: req.bodyrulesId,
-    hasVisa: req.bodyhasVisa,
+    rulesId: req.body.rulesId,
+    hasVisa: req.body.hasVisa,
+    allowToCreateWork: req.body.allowToCreateWork,
+    receiveAt: req.body.receiveAt,
   };
 
   create(incident);
@@ -296,6 +298,12 @@ exports.findAllVisa = (req, res) => {
             [Op.ne]: '8388608',
           },
         },
+        {
+          statusId: {
+            [Op.ne]: '8388605',
+          },
+        },
+        { hasVisa: false },
       ],
     });
 

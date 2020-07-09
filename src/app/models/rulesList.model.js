@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
       field: 'has_visa',
       defaultValue: true,
     },
+    hasVisaAt: {
+      type: Sequelize.DATE,
+    },
   });
   return RulesList;
 };

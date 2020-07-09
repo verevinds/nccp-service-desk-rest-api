@@ -9,6 +9,7 @@ module.exports = (app) => {
   router.get('/:id', rulesList.findOne);
 
   // Update a rulesList with id
+  router.put('/isvisa', rulesList.isVisa);
   router.put('/:id', rulesList.update);
   router.delete('/:id', rulesList.delete);
 

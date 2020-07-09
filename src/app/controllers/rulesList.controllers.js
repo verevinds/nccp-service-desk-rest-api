@@ -1,5 +1,6 @@
 const db = require('../models');
 const RulesList = db.rulesList;
+const Incident = db.incidents;
 
 exports.findAll = (req, res) => {
   RulesList.findAll()
@@ -36,6 +37,39 @@ exports.update = (req, res) => {
       if (num == 1) {
         res.send({
           message: `RulesList was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update RulesList with id=${id}. Maybe RulesList was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update RulesList with id=${id}`,
+      });
+    });
+};
+
+exports.isVisa = (req, res) => {
+  const positionId = req.body.positionId;
+  const incidentId = req.body.incidentId;
+
+  RulesList.update(req.body, { where: { positionId, incidentId } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `RulesList was update successfully`,
+        });
+        RulesList.findAll({ where: { positionId, incidentId } }).then((res) => {
+          let hasVisa = true;
+          res.forEach((item) => {
+            if (item.dataValues.hasVisa === false) hasVisa = false;
+          });
+          if (hasVisa) Incident.update({ hasVisa, receiveAt: new Date() }, { where: { id: incidentId } });
+          console.log('-^^^^^^^^^^^^^');
+          console.log(res);
+          console.log('-^^^^^^^^^^^^^');
         });
       } else {
         res.send({

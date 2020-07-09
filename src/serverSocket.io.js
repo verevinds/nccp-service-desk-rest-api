@@ -9,8 +9,8 @@ const Incident = db.incidents;
 const Subscriptions = db.subscriptions;
 const Op = db.Sequelize.Op;
 
-var privateKey = fs.readFileSync('./domain.key');
-var certificate = fs.readFileSync('./domain.crt');
+var privateKey = fs.readFileSync('./src/domain.key');
+var certificate = fs.readFileSync('./src/domain.crt');
 var credentials = { key: privateKey, cert: certificate };
 const server = http.createServer(credentials, app);
 
@@ -30,7 +30,6 @@ sio.on('connection', (client) => {
   console.log(`${client.conn.id}:`);
 
   client.on('newIncident', (data) => {
-    console.log(`${client.conn.id} newIncident:`, data);
     client.broadcast.emit(String(data.departmentId), data);
 
     Incident.findOne({ where: { id: data.id } }).then((res) => {
@@ -67,6 +66,7 @@ sio.on('connection', (client) => {
   client.on('incidentUpdate', (data) => {
     Incident.findOne({ where: { id: data.id } }).then((res) => {
       let { currentResponsible, departmentId, userNumber } = res.dataValues;
+
       currentResponsible
         ? client.broadcast.emit(`updateResponsible${currentResponsible}`, res.dataValues)
         : client.broadcast.emit(`updateResponsibleDepartment${departmentId}`, res.dataValues);
