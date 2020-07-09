@@ -37,8 +37,8 @@ var corsOptions = {
   },
 };
 
-var privateKey = fs.readFileSync('./domain.key');
-var certificate = fs.readFileSync('./domain.crt');
+var privateKey = fs.readFileSync('./src/domain.key');
+var certificate = fs.readFileSync('./src/domain.crt');
 var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings

@@ -4,7 +4,7 @@
   "description": "REST API server written in Node JS based on MySQL database",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "pm2 start src/serverApiPostgreSQL.js --watch && pm2 start src/serverSocket.io.js --watch"
   },
   "repository": {
     "type": "git",
