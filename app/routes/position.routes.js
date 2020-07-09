@@ -6,6 +6,7 @@ module.exports = (app) => {
   router.post('/', position.create);
   router.get('/', position.findAll);
   router.put('/:id', position.update);
+  router.delete('/all', position.deleteAll);
 
   app.use('/api/positions', router);
 };

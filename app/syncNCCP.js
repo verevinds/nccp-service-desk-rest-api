@@ -43,6 +43,7 @@ module.exports = async function syncNCCP() {
             body: {
               id: key,
               name: res.data[key].name,
+              parent: res.data[key].parent,
             },
             isConsole: true,
           };

@@ -9,6 +9,8 @@ const User = db.users;
 const Option = db.options;
 const Match = db.matches;
 const Rules = db.rules;
+const RulesList = db.rulesList;
+const Positions = db.positions;
 const Op = db.Sequelize.Op;
 const io = db.io;
 
@@ -27,6 +29,23 @@ exports.create = (req, res) => {
         // io.on('connection', (client) => {
         //   client.broadcast.emit(String(incident.departmentId), data);
         // });
+
+        Rules.findAll({
+          where: {
+            [Op.or]: [
+              { categoryId: incident.categoryId },
+              { propertyId: incident.propertyId },
+              { optionId: incident.optionId },
+            ],
+          },
+        }).then((res) => {
+          let rules = res.map((item) => item.dataValues);
+          rules.forEach((item) => {
+            let rulesList = { incidentId: data.dataValues.id, positionId: item.positionId, hasVisa: false };
+            RulesList.create(rulesList);
+            Incident.update({ hasVisa: false }, { where: { id: data.dataValues.id } });
+          });
+        });
       })
       .catch((err) => {
         res.status(500).send({
@@ -43,112 +62,23 @@ exports.create = (req, res) => {
     level: req.body.level,
     statusId: req.body.statusId,
     departmentId: req.body.departmentId,
+    initiatorDepartmentParent: req.body.initiatorDepartmentParent,
+    initiatorDepartment: req.body.initiatorDepartment,
+    allowToCreate: req.body.allowToCreate,
     userNumber: req.body.userNumber,
     categoryId: req.body.categoryId,
     propertyId: req.body.propertyId,
     optionId: req.body.optionId,
     params: req.body.params,
     consent: req.body.consent,
+    rulesId: req.bodyrulesId,
+    hasVisa: req.bodyhasVisa,
   };
 
-  if (!!incident.categoryId || !!incident.propertyId || !!incident.optionId) {
-    Rules.findAll({
-      where: {
-        [Op.or]: [
-          { categoryId: incident.categoryId },
-          { propertyId: incident.propertyId },
-          { optionId: incident.optionId },
-        ],
-      },
-    }).then((res) => {
-      let data = res.map((item) => item.dataValues);
-
-      console.log('-----------------');
-      console.log('data', data);
-      console.log('-----------------');
-    });
-    create(incident);
-  } else {
-    create(incident);
-  }
+  create(incident);
 };
-
-// Retrieve all Incidents from the database
-exports.findAll = (req, res) => {
-  let where = {};
-  const userNumber = req.query.userNumber;
-
-  const departmentId = req.query.departmentId;
-
-  const arrayCategoryId = req.query.arrayCategoryId;
-  const arrayPropertyId = req.query.arrayPropertyId;
-  const arrayOptionId = req.query.arrayOptionId;
-
-  console.log('------------------------');
-  console.log('arrayCategoryId', arrayCategoryId);
-  console.log('arrayPropertyId', arrayPropertyId);
-  console.log('arrayOptionId', arrayOptionId);
-  console.log('------------------------');
-  let categories = [];
-  let properties = [];
-  let options = [];
-
-  let arrayCategory = arrayCategoryId && JSON.parse(arrayCategoryId);
-  let arrayProperties = arrayPropertyId && JSON.parse(arrayPropertyId);
-  let arrayOption = arrayOptionId && JSON.parse(arrayOptionId);
-
-  if (Array.isArray(arrayCategory) && arrayCategory.length > 0)
-    arrayCategory.forEach((item) => {
-      categories.push({ categoryId: item });
-    });
-  if (Array.isArray(arrayProperties) && arrayProperties.length > 0)
-    arrayProperties.forEach((item) => {
-      properties.push({ propertyId: item });
-    });
-  if (Array.isArray(arrayOptionId) && arrayOptionId.length > 0)
-    arrayOptionId.forEach((item) => {
-      options.push({ optionId: item });
-    });
-
-  let params = [...categories, ...properties, ...options];
-
-  const history = req.query.history;
-  userNumber ? Object.assign(where, { userNumber }) : null;
-  if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
-
-  // if (params.length > 0) Object.assign(where, { [Op.or]: params });
-  if (history) {
-    let and = [];
-    if (params.length) and.push({ [Op.or]: params });
-    and.push({
-      [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
-    });
-
-    Object.assign(where, {
-      [Op.and]: and,
-    });
-  } else
-    Object.assign(where, {
-      [Op.and]: [
-        {
-          statusId: {
-            [Op.ne]: '8388604',
-          },
-        },
-        {
-          statusId: {
-            [Op.ne]: '8388608',
-          },
-        },
-        { [Op.or]: params },
-      ],
-    });
-  console.log('------------------------');
-
-  console.log('params', params);
-  console.log('where', where);
-  console.log('------------------------');
-  Incident.findAll({
+function incidentOptions(where) {
+  return {
     where,
     include: [
       { model: Match, attributes: ['isMatch', 'id', 'incidentId', 'code', 'params'] },
@@ -189,9 +119,33 @@ exports.findAll = (req, res) => {
       },
       { model: User, as: 'responsibleUser' },
       { model: CommentIncident, include: [{ model: User, as: 'user' }] },
+      {
+        model: RulesList,
+        include: [
+          {
+            model: Positions,
+            include: [
+              {
+                model: User,
+                as: 'users',
+                attributes: ['number', 'name1', 'name2', 'name3', 'fired'],
+                where: { fired: 0 },
+              },
+            ],
+            attributes: ['id'],
+          },
+        ],
+        attributes: ['hasVisa'],
+      },
     ],
-  })
+  };
+}
+function incidentFindAll(res, where) {
+  Incident.findAll(incidentOptions(where))
     .then((data) => {
+      // console.log('----------------');
+      // console.log('data', data);
+      // console.log('----------------');
       res.send(data);
     })
     .catch((err) => {
@@ -199,55 +153,185 @@ exports.findAll = (req, res) => {
         message: err.message || `Some error occurred while retrieving Incidents.`,
       });
     });
+}
+
+function incidentParams(req) {
+  const arrayCategoryId = req.query.arrayCategoryId;
+  const arrayPropertyId = req.query.arrayPropertyId;
+  const arrayOptionId = req.query.arrayOptionId;
+
+  let categories = [];
+  let properties = [];
+  let options = [];
+
+  let arrayCategory = arrayCategoryId && JSON.parse(arrayCategoryId);
+  let arrayProperties = arrayPropertyId && JSON.parse(arrayPropertyId);
+  let arrayOption = arrayOptionId && JSON.parse(arrayOptionId);
+
+  if (Array.isArray(arrayCategory) && arrayCategory.length > 0)
+    arrayCategory.forEach((item) => {
+      categories.push({ categoryId: item });
+    });
+  if (Array.isArray(arrayProperties) && arrayProperties.length > 0)
+    arrayProperties.forEach((item) => {
+      properties.push({ propertyId: item });
+    });
+  if (Array.isArray(arrayOption) && arrayOption.length > 0)
+    arrayOption.forEach((item) => {
+      options.push({ optionId: item });
+    });
+
+  return [...categories, ...properties, ...options];
+}
+
+// Retrieve all Incidents from the database
+exports.findAll = (req, res) => {
+  incidentFindAll(res);
+};
+// Retrieve all Incidents from the database
+exports.findAllAllowToCreate = (req, res) => {
+  incidentFindAll(res);
+};
+// Retrieve all Incidents from the database
+exports.findAllMy = (req, res) => {
+  let where = {};
+  const userNumber = req.query.userNumber;
+  Object.assign(where, {
+    [Op.and]: [
+      {
+        statusId: {
+          [Op.ne]: '8388604',
+        },
+      },
+      {
+        statusId: {
+          [Op.ne]: '8388608',
+        },
+      },
+      { userNumber },
+    ],
+  });
+
+  incidentFindAll(res, where);
 };
 
+// Retrieve all Incidents from the database
+exports.findAllWork = (req, res) => {
+  let where = {};
+  const userNumber = req.query.userNumber;
+
+  const departmentId = req.query.departmentId;
+
+  let params = incidentParams(req);
+
+  const allowToCreate = req.query.allowToCreate;
+  console.log('---------------------------');
+  console.log('allowToCreate', allowToCreate);
+  console.log('---------------------------');
+  if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+  and = [
+    {
+      statusId: {
+        [Op.ne]: '8388604',
+      },
+    },
+    {
+      statusId: {
+        [Op.ne]: '8388608',
+      },
+    },
+    { [Op.or]: params },
+    { allowToCreate: allowToCreate },
+  ];
+  if (allowToCreate !== 'false') and.push({ hasVisa: true });
+
+  // if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+
+  // if (params.length > 0) Object.assign(where, { [Op.or]: params });
+  // if (history) {
+  //   let and = [];
+  //   if (params.length) and.push({ [Op.or]: params });
+  //   and.push({
+  //     [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
+  //   });
+
+  //   Object.assign(where, {
+  //     [Op.and]: and,
+  //   });
+  // } else
+  Object.assign(where, {
+    [Op.and]: and,
+  });
+  console.log('------------------------');
+
+  console.log('params', params);
+  console.log('where', where);
+  console.log('------------------------');
+  incidentFindAll(res, where);
+};
+exports.findAllVisa = (req, res) => {
+  const hasVisa = req.query.hasVisa;
+  const positionId = req.query.positionId;
+  let or = [];
+  RulesList.findAll({ where: { positionId } }).then((resolve) => {
+    console.log('------------');
+    console.log('hasVisa', hasVisa);
+    console.log('positionId', positionId);
+    console.log('res', resolve);
+    or = resolve.map((item) => {
+      return { id: item.dataValues.incidentId, allowToCreate: true };
+    });
+    console.log('where', { [Op.or]: or });
+    incidentFindAll(res, {
+      [Op.and]: [
+        { [Op.or]: or },
+        { allowToCreate: true },
+        {
+          statusId: {
+            [Op.ne]: '8388604',
+          },
+        },
+        {
+          statusId: {
+            [Op.ne]: '8388608',
+          },
+        },
+      ],
+    });
+
+    console.log('------------');
+  });
+};
+// Retrieve all Incidents from the database
+exports.findAllHistory = (req, res) => {
+  const userNumber = req.query.userNumber;
+  const departmentId = req.query.departmentId;
+
+  let where = {};
+  let params = incidentParams(req);
+  let and = [
+    {
+      [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
+    },
+  ];
+
+  if (userNumber) Object.assign(where, { userNumber });
+  if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+  if (params.length) and.push({ [Op.or]: params });
+  else ({ userNumber });
+
+  Object.assign(where, {
+    [Op.and]: and,
+  });
+
+  incidentFindAll(res, where);
+};
 // Find a single Incident with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
+  const where = { id };
 
-  Incident.findOne({
-    where: { id },
-    include: [
-      { model: Match, attributes: ['isMatch', 'id', 'incidentId', 'code', 'params'] },
-      { model: Department, attributes: ['name'] },
-      {
-        model: Category,
-        attributes: ['name', 'level'],
-      },
-      {
-        model: Property,
-        attributes: ['name', 'level'],
-      },
-      {
-        model: Option,
-        attributes: ['name', 'level'],
-      },
-      { model: Files, include: [{ model: User, as: 'user' }] },
-      {
-        model: User,
-        as: 'initiatorUser',
-        attributes: [
-          'number',
-          'positionId',
-          'departmentId',
-          'fired',
-          'sex',
-          'name1',
-          'name2',
-          'name3',
-          'phone1',
-          'phone2',
-          'email',
-          'exmail',
-          'computer',
-          'dob',
-          'photo',
-        ],
-      },
-      { model: User, as: 'responsibleUser' },
-      { model: CommentIncident, include: [{ model: User, as: 'user' }] },
-    ],
-  })
+  Incident.findOne(incidentOptions(where))
     .then((data) => {
       res.send(data);
     })

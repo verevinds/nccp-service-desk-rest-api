@@ -1,10 +1,7 @@
 const db = require('../models');
 const Positions = db.positions;
 const Op = db.Sequelize.Op;
-const {
-  toFirstLettersUppercase,
-  toLetterUppercase,
-} = require('../../js/textFormat');
+const { toFirstLettersUppercase, toLetterUppercase } = require('../../js/textFormat');
 
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -25,9 +22,7 @@ exports.create = (req, res) => {
         // console.log(data);
       })
       .catch((err) => {
-        console.log(
-          err.message || `Some error occurred while creating the Department.`,
-        );
+        console.log(err.message || `Some error occurred while creating the Department.`);
       });
   } else {
     Positions.create(position)
@@ -36,8 +31,7 @@ exports.create = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message:
-            err.message || `Some error occurred while creating the Department.`,
+          message: err.message || `Some error occurred while creating the Department.`,
         });
       });
   }
@@ -59,8 +53,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving tuttorials.`,
+        message: err.message || `Some error occurred while retrieving tuttorials.`,
       });
     });
 };
@@ -84,6 +77,23 @@ exports.update = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: `Error update Positions with id=${id}`,
+      });
+    });
+};
+
+exports.deleteAll = (req, res) => {
+  Positions.destroy({
+    where: {},
+    truncate: false,
+  })
+    .then((nums) => {
+      res.send({
+        message: `${nums} Userss were deleted successfully!`,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while removing all Userss.',
       });
     });
 };

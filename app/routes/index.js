@@ -19,4 +19,5 @@ module.exports = (app) => {
   require('./subscription.routes')(app);
   require('./responsible.routes')(app);
   require('./rules.routes')(app);
+  require('./rulesList.routes')(app);
 };

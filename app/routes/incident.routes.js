@@ -7,10 +7,14 @@ module.exports = (app) => {
   router.post('/', incident.create);
 
   // Retrieve all Incident
-  router.get('/', incident.findAll);
+  router.get('/work', incident.findAllWork);
+  router.get('/my', incident.findAllMy);
+  router.get('/visa', incident.findAllVisa);
+  router.get('/all', incident.findAll);
+  router.get('/history', incident.findAllHistory);
 
   // Retrieve a single Incident with id
-  router.get('/:id', incident.findOne);
+  router.get('/work/:id', incident.findOne);
 
   // Update a Incident with id
   router.put('/:id', incident.update);

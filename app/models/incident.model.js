@@ -1,5 +1,22 @@
 module.exports = (sequelize, Sequelize) => {
   const Incident = sequelize.define('incident', {
+    initiatorDepartmentParent: {
+      type: Sequelize.INTEGER,
+      field: 'initiator_department_parent',
+    },
+    initiatorDepartment: {
+      type: Sequelize.INTEGER,
+      field: 'initiator_department',
+    },
+    hasVisa: {
+      type: Sequelize.BOOLEAN,
+      field: 'has_visa',
+      defaultValue: true,
+    },
+    rulesId: {
+      type: Sequelize.INTEGER,
+      field: 'rules_id',
+    },
     startWork: {
       type: Sequelize.DATE,
       field: 'start_work',
@@ -15,6 +32,10 @@ module.exports = (sequelize, Sequelize) => {
     closeWork: {
       type: Sequelize.DATE,
       field: 'close_work',
+    },
+    allowToCreateWork: {
+      type: Sequelize.DATE,
+      field: 'allow_to_create_work',
     },
     currentResponsible: {
       type: Sequelize.INTEGER,

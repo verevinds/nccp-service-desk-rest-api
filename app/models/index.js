@@ -33,11 +33,25 @@ require('../opModify')(db.Sequelize.Op);
   db.subscriptions = require('./subscription.model')(sequelize, Sequelize);
   db.responsible = require('./responsible.model')(sequelize, Sequelize);
   db.rules = require('./rules.model')(sequelize, Sequelize);
+  db.rulesList = require('./rulesList.model')(sequelize, Sequelize);
 }
 
 {
+  db.incidents.hasMany(db.rulesList);
+  db.rulesList.belongsTo(db.incidents);
+
+  db.positions.hasOne(db.rulesList);
+  db.rulesList.belongsTo(db.positions);
+
   db.positions.hasMany(db.responsible);
   db.responsible.belongsTo(db.positions);
+
+  db.positions.hasMany(db.users, {
+    foreignKey: 'positionId',
+    targetKey: 'id',
+    as: 'users',
+  });
+  db.users.belongsTo(db.positions);
 
   //! Осуществить связь One-To-One между User-Departments
   // Implement associations "One-To-One" between table User to Departments

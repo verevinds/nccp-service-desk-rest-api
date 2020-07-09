@@ -15,6 +15,7 @@ exports.create = (req, res) => {
     id: req.body.id,
     name: req.body.name,
     departmentId: req.body.departmentId,
+    parent: req.body.parent,
   };
 
   if (req.isConsole) {
@@ -23,9 +24,7 @@ exports.create = (req, res) => {
         // console.log(data);
       })
       .catch((err) => {
-        console.log(
-          err.message || `Some error occurred while creating the Department.`,
-        );
+        console.log(err.message || `Some error occurred while creating the Department.`);
       });
   } else {
     Department.create(department)
@@ -34,19 +33,38 @@ exports.create = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message:
-            err.message || `Some error occurred while creating the Department.`,
+          message: err.message || `Some error occurred while creating the Department.`,
         });
       });
   }
 };
+exports.update = (req, res) => {
+  const id = req.params.id;
 
+  Department.update(req.body, { where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Comment was update successfully`,
+        });
+      } else {
+        res.send({
+          message: `Cannot update Comment with id=${id}. Maybe Comment was not found or req.body is empty!`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Error update Comment with id=${id}`,
+      });
+    });
+};
 exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
   Department.findAll({
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'parent'],
     where: condition,
     include: [Category],
   })
@@ -55,8 +73,7 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || `Some error occurred while retrieving tuttorials.`,
+        message: err.message || `Some error occurred while retrieving tuttorials.`,
       });
     });
 };
