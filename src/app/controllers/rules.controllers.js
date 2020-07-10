@@ -39,7 +39,27 @@ exports.findAll = (req, res) => {
       });
     });
 };
+exports.findRules = (req, res) => {
+  const categoryId = req.body.categoryId
+  const propertyId =req.body.propertyId
+  const optionId =req.body.optionId
 
+  const where = {}
+
+  if(categoryId) Object.assign(where,{categoryId})
+  if(propertyId) Object.assign(where,{propertyId})
+  if(optionId) Object.assign(where,{optionId})
+
+  Rules.findAll({where})
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || `Some error occurred while retrieving tuttorials.`,
+      });
+    });
+};
 exports.findOne = (req, res) => {
   const id = req.params.id;
 

@@ -31,9 +31,9 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  const departmentId = req.params.departmentId;
-  const userNumber = req.params.userNumber;
-  const positionId = req.params.positionId;
+  const departmentId = req.query.departmentId;
+  const userNumber = req.query.userNumber;
+  const positionId = req.query.positionId;
   const where = {};
 
   if (departmentId) Object.assign(where, { departmentId });
@@ -52,10 +52,10 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-  const userNumber = req.params.userNumber;
+  const positionId = req.params.userNumber;
 
   Responsible.findOne({
-    where: { userNumber },
+    where: { positionId },
   })
     .then((data) => {
       res.send(data);

@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       field: 'start_work',
     },
-    receiveAt: {
+    receiveat: {
       type: Sequelize.DATE,
     },
     finishWork: {

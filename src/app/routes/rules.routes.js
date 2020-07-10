@@ -8,6 +8,7 @@ module.exports = (app) => {
 
   // Retrieve all rule
   router.get('/', rule.findAll);
+  router.get('/params', rule.findRules);
   // Retrieve rule
   router.get('/:id', rule.findOne);
 

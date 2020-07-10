@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const RulesList = sequelize.define('rulesList', {
+  const RulesList = sequelize.define('rules_list', {
     positionId: {
       type: Sequelize.INTEGER,
       field: 'position_id',

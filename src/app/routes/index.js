@@ -20,4 +20,5 @@ module.exports = (app) => {
   require('./responsible.routes')(app);
   require('./rules.routes')(app);
   require('./rulesList.routes')(app);
+  require('./setting.routes')(app);
 };

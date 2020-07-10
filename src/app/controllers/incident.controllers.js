@@ -43,7 +43,7 @@ exports.create = (req, res) => {
           rules.forEach((item) => {
             let rulesList = { incidentId: data.dataValues.id, positionId: item.positionId, hasVisa: false };
             RulesList.create(rulesList);
-            Incident.update({ hasVisa: false }, { where: { id: data.dataValues.id } });
+            Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
           });
         });
       })
@@ -246,6 +246,7 @@ exports.findAllWork = (req, res) => {
     { allowToCreate: allowToCreate },
   ];
   if (allowToCreate !== 'false') and.push({ hasVisa: true });
+  else and.push({ initiatorDepartment: departmentId });
 
   // if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
 

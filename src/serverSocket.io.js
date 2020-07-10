@@ -84,15 +84,17 @@ sio.on('connection', (client) => {
           return userNumberSubscription;
         });
         let mailList = Array.from(new Set(subscriptions));
+        let params = '';
 
         let filterMailList = mailList.filter((item) => item !== data.userNumber);
         filterMailList.forEach((item) => {
+          console.log('Отправленно', item);
           Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
             params: {
               numbers: item,
               from: `ServiceDesk`,
               subject: `Заявка №${data.id}`,
-              text: `Поступили изменения по заявке №${data.id} http://srv-sdesk.c31.nccp.ru/
+              text: `Поступили изменения по заявке №${data.id} http://srv-sdesk.c31.nccp.ru/${params}
                 Отвечать на это сообщение не нужно!`,
             },
           }).then((res) => console.log(`Сообщение отправлено ${item}`));

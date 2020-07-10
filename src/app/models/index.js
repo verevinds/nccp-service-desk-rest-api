@@ -34,6 +34,7 @@ require('../opModify')(db.Sequelize.Op);
   db.responsible = require('./responsible.model')(sequelize, Sequelize);
   db.rules = require('./rules.model')(sequelize, Sequelize);
   db.rulesList = require('./rulesList.model')(sequelize, Sequelize);
+  db.settings = require('./setting.model')(sequelize, Sequelize);
 }
 
 {
