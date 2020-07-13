@@ -66,7 +66,7 @@ exports.isVisa = (req, res) => {
           res.forEach((item) => {
             if (item.dataValues.hasVisa === false) hasVisa = false;
           });
-          if (hasVisa) Incident.update({ hasVisa, receiveAt: new Date() }, { where: { id: incidentId } });
+          if (hasVisa) Incident.update({ hasVisa, receiveAt: new Date(), statusId: 0 }, { where: { id: incidentId } });
           console.log('-^^^^^^^^^^^^^');
           console.log(res);
           console.log('-^^^^^^^^^^^^^');
