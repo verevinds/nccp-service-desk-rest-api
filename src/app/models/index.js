@@ -35,8 +35,10 @@ require('../opModify')(db.Sequelize.Op);
   db.rules = require('./rules.model')(sequelize, Sequelize);
   db.rulesList = require('./rulesList.model')(sequelize, Sequelize);
   db.settings = require('./setting.model')(sequelize, Sequelize);
+  db.resources = require('./resource.model')(sequelize, Sequelize);
+  db.resourceBinds = require('./resourceBind.model')(sequelize, Sequelize);
 }
-
+require('./associations/resource.association')(db);
 {
   db.incidents.hasMany(db.rulesList);
   db.rulesList.belongsTo(db.incidents);
