@@ -2,8 +2,8 @@ const db = require('../models');
 const User = db.users;
 const Department = db.departments;
 const Position = db.positions;
-const Access = db.access;
 const Responsible = db.responsible;
+const Access = db.access;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Users

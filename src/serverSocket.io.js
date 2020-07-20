@@ -5,8 +5,12 @@ const https = require('https');
 var fs = require('fs');
 const db = require('./app/models');
 const { default: Axios } = require('axios');
+const { exit } = require('process');
 const Incident = db.incidents;
 const Subscriptions = db.subscriptions;
+const Users = db.users;
+const Position = db.positions;
+const Responsible = db.responsible;
 const Op = db.Sequelize.Op;
 
 var privateKey = fs.readFileSync('./domain.key');
@@ -26,6 +30,71 @@ const sio = require('socket.io')(server, {
   },
 });
 
+function sendMailMyDepartment(props) {
+  let { item, incidentResolve, data } = props;
+  if (item.dataValues.code === 100 && incidentResolve.dataValues.hasVisa && incidentResolve.dataValues.allowToCreate) {
+    props.subject = `Подписка: "Мой отдел". Заявка №${data.id}`;
+    props.message = `Заявка №${data.id} получила изменения. http://srv-sdesk.c31.nccp.ru/myincidents/${data.id}`;
+
+    sendMessage(props);
+  }
+}
+function sendMailMyResponsible(props) {
+  let { number, incidentResolve, data } = props;
+
+  Users.findOne({
+    where: { number },
+    include: [
+      {
+        model: Position,
+        include: [
+          {
+            model: Responsible,
+            attributes: [
+              'categoryId',
+              'departmentId',
+              'isArchive',
+              'optionId',
+              'positionId',
+              'propertyId',
+              'userNumber',
+            ],
+          },
+        ],
+      },
+    ],
+  }).then((userResolve) => {
+    let { responsibles } = userResolve.dataValues.position;
+    let isResponsible = false;
+
+    responsibles.forEach(({ dataValues }) => {
+      let responsible = dataValues;
+      if (responsible.categoryId == incidentResolve.dataValues.categoryId) isResponsible = true;
+      if (responsible.propertyId == incidentResolve.dataValues.propertyId) isResponsible = true;
+      if (responsible.optionId == incidentResolve.dataValues.optionId) isResponsible = true;
+      console.log('responsible', responsible);
+    });
+
+    if (isResponsible) {
+      props.subject = `Подписка: "Моя ответственность". Заявка №${data.id}`;
+      props.message = `Заявка №${data.id} получила изменения. http://srv-sdesk.c31.nccp.ru/myincidents/${data.id}`;
+      sendMessage(props);
+    }
+  });
+}
+function sendMessage(props) {
+  let { subject, message, number, userNumbersSended } = props;
+  Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
+    params: {
+      numbers: number,
+      from: `ServiceDesk`,
+      subject,
+      text: `${message} Отвечать на это сообщение не нужно!`,
+    },
+  }).then((subscriptionResolve) => console.log(`Тема: ${subject}. Сообщение  ${message}  отправлено ${number}`));
+  userNumbersSended.push(number);
+}
+
 sio.on('connection', (client) => {
   console.log(`${client.conn.id}:`);
 
@@ -33,52 +102,8 @@ sio.on('connection', (client) => {
     client.broadcast.emit(String(data.departmentId), data);
     console.log(String(data.departmentId), data);
 
-    // Incident.findOne({ where: { id: data.id } }).then((res) => {
-    //   let { currentResponsible, departmentId, userNumber } = res.dataValues;
-
-    //   Subscriptions.findAll({
-    //     where: {
-    //       [Op.or]: [{ currentResponsible }, { departmentId }, { userNumber }],
-    //     },
-    //   }).then((subscription) => {
-    //     let subscriptions = subscription.map((item) => {
-    //       let { userNumberSubscription, name, code } = item.dataValues;
-
-    //       return userNumberSubscription;
-    //     });
-    //     let mailList = Array.from(new Set(subscriptions));
-
-    //     let filterMailList = mailList.filter((item) => item !== data.userNumber);
-    //     filterMailList.forEach((item) => {
-    //       Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
-    //         params: {
-    //           numbers: item,
-    //           from: `ServiceDesk`,
-    //           subject: `Заявка №${data.id}`,
-    //           text: `Поступила новая заявка №${data.id} http://srv-sdesk.c31.nccp.ru/
-    //             Отвечать на это сообщение не нужно!`,
-    //         },
-    //       }).then((res) => console.log(`Сообщение отправлено ${item}`));
-    //     });
-    //   });
-    // });
-  });
-
-  client.on('incidentUpdate', (data) => {
     Incident.findOne({ where: { id: data.id } }).then((incidentResolve) => {
       let { currentResponsible, departmentId, userNumber } = incidentResolve.dataValues;
-      console.log('Пришли данные по инциденту: ', { currentResponsible, departmentId, userNumber });
-      currentResponsible
-        ? client.broadcast.emit(`updateResponsible${currentResponsible}`, incidentResolve.dataValues)
-        : client.broadcast.emit(`updateResponsibleDepartment${departmentId}`, incidentResolve.dataValues);
-
-      client.broadcast.emit(`updateIncidentOwner${userNumber}`, incidentResolve.dataValues);
-
-      // currentResponsible
-      //   ? console.log(`updateResponsible${currentResponsible}`, res.dataValues)
-      //   : console.log(`updateResponsibleDepartment${departmentId}`, res.dataValues);
-
-      // console.log(`updateIncidentOwner${userNumber}`, res.dataValues);
 
       Subscriptions.findAll({
         where: {
@@ -86,62 +111,57 @@ sio.on('connection', (client) => {
         },
       }).then((subscription) => {
         let userNumbersSended = [];
-        /** Сначала отправляем все подписки "Мой инцидент" */
+
         subscription.forEach((item) => {
-          function sendMessage(subject, message, number) {
-            Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
-              params: {
-                numbers,
-                from: `ServiceDesk`,
-                subject,
-                text: `${message} Отвечать на это сообщение не нужно!`,
-              },
-            }).then((subscriptionResolve) =>
-              console.log(`Сообщение отправлено ${item.dataValues.userNumberSubscription}`),
-            );
-            console.log('subject', subject);
-            console.log('message', message);
-            userNumbersSended.push(item.dataValues.userNumberSubscription);
-          }
-          console.log('subscription', item.dataValues);
-          let wasUsers = !!~userNumbersSended.findIndex((elem) => elem === item.dataValues.userNumberSubscription);
+          let number = item.dataValues.userNumberSubscription;
+          let wasUsers = !!~userNumbersSended.findIndex((elem) => elem === number);
+          let message = `Вам поступила заявка №${data.id}. http://srv-sdesk.c31.nccp.ru/incident/${data.id}`;
+          if (!wasUsers) setTimeout(sendMailMyResponsible({ number, incidentResolve, userNumbersSended, data }), 500);
+          wasUsers = !!~userNumbersSended.findIndex((elem) => elem === number);
+          if (!wasUsers)
+            setTimeout(sendMailMyDepartment({ item, incidentResolve, userNumbersSended, number, data, message }), 500);
+        });
+      });
+    });
+  });
+
+  client.on('incidentUpdate', (data) => {
+    Incident.findOne({ where: { id: data.id } }).then((incidentResolve) => {
+      let { currentResponsible, departmentId, userNumber } = incidentResolve.dataValues;
+      console.log('incidentResolve', incidentResolve.dataValues);
+      setTimeout(() => {
+        currentResponsible
+          ? client.broadcast.emit(`updateResponsible${currentResponsible}`, incidentResolve.dataValues)
+          : client.broadcast.emit(`updateResponsibleDepartment${departmentId}`, incidentResolve.dataValues);
+
+        client.broadcast.emit(`updateIncidentOwner${userNumber}`, incidentResolve.dataValues);
+      }, 1000);
+
+      Subscriptions.findAll({
+        where: {
+          [Op.or]: [{ currentResponsible }, { departmentId }, { userNumber }],
+        },
+      }).then((subscription) => {
+        let userNumbersSended = [];
+
+        subscription.forEach((item) => {
           let number = item.dataValues.userNumberSubscription;
 
+          /** Сначала отправляем все подписки "Моя заявка" */
+          let wasUsers = !!~userNumbersSended.findIndex((elem) => elem === number);
           if (!wasUsers && item.dataValues.code === 300) {
             let subject = `Подписка: "Моя заявка". Заявка №${data.id}`;
-            let message = `Ваш инцидент №${data.id} получил изменения. http://srv-sdesk.c31.nccp.ru/myincidents/${data.id}`;
-            sendMessage(subject, message, number);
+            let message = `Ваш заявка №${data.id} получила изменения. http://srv-sdesk.c31.nccp.ru/myincidents/${data.id}`;
+            sendMessage({ subject, message, number, userNumbersSended, data });
           }
-          if (!wasUsers && item.dataValues.code === 100) {
-            let subject = `Подписка: "Мои отдел". Заявка №${data.id}`;
-            let message = `Ваш инцидент №${data.id} получил изменения. http://srv-sdesk.c31.nccp.ru/incident/${data.id}`;
-
-            console.log('incidentResolve', incidentResolve.dataValues);
-            sendMessage(subject, message, number);
-          }
-          console.log('wasUsers', wasUsers);
+          /** Моя ответственность */
+          wasUsers = !!~userNumbersSended.findIndex((elem) => elem === number);
+          if (!wasUsers) setTimeout(sendMailMyResponsible({ number, incidentResolve, userNumbersSended, data }), 500);
+          /** Мой отдел */
+          wasUsers = !!~userNumbersSended.findIndex((elem) => elem === number);
+          if (!wasUsers)
+            setTimeout(sendMailMyDepartment({ item, incidentResolve, userNumbersSended, number, data }), 500);
         });
-        console.log('userNumbersSended', userNumbersSended);
-
-        // let subscriptions = subscription.map((item) => {
-        //   let { userNumberSubscription, name, code } = item.dataValues;
-        //   return userNumberSubscription;
-        // });
-        // let mailList = Array.from(new Set(subscriptions));
-        // let params = '';
-        // let filterMailList = mailList.filter((item) => item !== data.userNumber);
-        // filterMailList.forEach((item) => {
-        //   console.log('Отправленно', item);
-        //   Axios.get('http://api.nccp-eng.ru/?method=mail.send', {
-        //     params: {
-        //       numbers: item,
-        //       from: `ServiceDesk`,
-        //       subject: `Заявка №${data.id}`,
-        //       text: `Поступили изменения по заявке №${data.id} http://srv-sdesk.c31.nccp.ru/${params}
-        //         Отвечать на это сообщение не нужно!`,
-        //     },
-        //   }).then((res) => console.log(`Сообщение отправлено ${item}`));
-        // });
       });
     });
   });

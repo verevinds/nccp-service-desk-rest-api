@@ -242,6 +242,11 @@ exports.findAllWork = (req, res) => {
         [Op.ne]: '8388608',
       },
     },
+    {
+      statusId: {
+        [Op.ne]: '8388607',
+      },
+    },
     { [Op.or]: params },
     { allowToCreate: allowToCreate },
   ];
@@ -272,6 +277,7 @@ exports.findAllWork = (req, res) => {
   console.log('------------------------');
   incidentFindAll(res, where);
 };
+
 exports.findAllVisa = (req, res) => {
   const hasVisa = req.query.hasVisa;
   const positionId = req.query.positionId;
@@ -309,6 +315,28 @@ exports.findAllVisa = (req, res) => {
     });
 
     console.log('------------');
+    console.log({
+      [Op.and]: [
+        { [Op.or]: or },
+        { allowToCreate: true },
+        {
+          statusId: {
+            [Op.ne]: '8388604',
+          },
+        },
+        {
+          statusId: {
+            [Op.ne]: '8388608',
+          },
+        },
+        {
+          statusId: {
+            [Op.ne]: '8388605',
+          },
+        },
+        { hasVisa: false },
+      ],
+    });
   });
 };
 // Retrieve all Incidents from the database
