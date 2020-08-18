@@ -10,40 +10,13 @@ const cors = require('cors');
 var http = require('http');
 var https = require('https');
 
-var whitelist = [
-  'http://localhost',
-  'http://192.168.213.88',
-  'http://srv-sdesk.c31.nccp.ru',
-  'http://srv-sdesk.c31.nccp.ru:8080',
-  'http://localhost',
-  'https://192.168.213.88',
-  'https://srv-sdesk.c31.nccp.ru',
-  'https://srv-sdesk.c31.nccp.ru:8080',
-  'http://192.168.213.88',
-  'http://192.168.214.106:8081',
-  'http://localhost:8081',
-  'https://192.168.213.88',
-  'https://192.168.214.106:8081',
-  'https://localhost:8081',
-];
-var corsOptions = {
-  credentials: true,
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
 var privateKey = fs.readFileSync('./src/domain.key');
 var certificate = fs.readFileSync('./src/domain.crt');
 var credentials = { key: privateKey, cert: certificate };
 //! Подключить к приложению cors с настройками corsOptions
 // Connect to cors app with corsOptions settings
-// app.use(cors({ credentials: true, origin: 'http://192.168.214.106:8081' }));
-app.use(cors(corsOptions));
+app.use(cors({ credentials: true, origin: '*' }));
+// app.use(cors(corsOptions));
 
 // app.use(express.static(path.join(__dirname, 'nccp-service-desk-client/build')));
 

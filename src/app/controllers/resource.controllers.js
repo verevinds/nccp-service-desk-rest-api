@@ -108,3 +108,25 @@ exports.update = (req, res) => {
       });
     });
 };
+
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Resource.destroy({ where: { id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: `Ресурс №${id} удален успешно!`,
+        });
+      } else {
+        res.send({
+          message: `Не получается удалить ресурс №${id}. Может быть его не существует.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: `Не получается удалить ресурс №${id}.`,
+      });
+    });
+};

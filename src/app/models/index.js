@@ -39,10 +39,9 @@ require('../opModify')(db.Sequelize.Op);
   db.resourceBinds = require('./resourceBind.model')(sequelize, Sequelize);
 }
 require('./associations/resource.association')(db);
+require('./associations/rulesList.association')(db);
+require('./associations/incident.association')(db);
 {
-  db.incidents.hasMany(db.rulesList);
-  db.rulesList.belongsTo(db.incidents);
-
   db.positions.hasOne(db.rulesList);
   db.rulesList.belongsTo(db.positions);
 

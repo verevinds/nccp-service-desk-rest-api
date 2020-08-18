@@ -11,6 +11,8 @@ const Match = db.matches;
 const Rules = db.rules;
 const RulesList = db.rulesList;
 const Positions = db.positions;
+const Resources = db.resources;
+const ResourceBind = db.resourceBinds;
 const Op = db.Sequelize.Op;
 const io = db.io;
 
@@ -23,14 +25,71 @@ exports.create = (req, res) => {
     return;
   }
   function create(incident) {
-    Incident.create(incident)
-      .then((data) => {
-        res.send(data);
-        // io.on('connection', (client) => {
-        //   client.broadcast.emit(String(incident.departmentId), data);
-        // });
+    Incident.create(incident).then((data) => {
+      // io.on('connection', (client) => {
+      //   client.broadcast.emit(String(incident.departmentId), data);
+      // });
 
-        Rules.findAll({
+      const resources = [];
+      console.log('------==========----------');
+      console.log('data', data);
+      console.log('------==========----------');
+      incident.params.map((row, indexRow) => {
+        row.map((col, indexCol) => {
+          if (col) {
+            const { select, value } = col;
+            if (select === 'resources') resources.push(value);
+          }
+        });
+      });
+
+      const resourcesUnique = Array.from(new Set(resources));
+
+      const paramsOr = resourcesUnique.map((resource) => {
+        return { id: resource };
+      });
+
+      async function createRules() {
+        await Resources.findAll({
+          where: { [Op.or]: paramsOr },
+          include: [
+            {
+              model: ResourceBind,
+              as: 'bind',
+
+              attributes: ['id', 'userNumber'],
+            },
+          ],
+        }).then((resources) => {
+          resources.forEach((resource) => {
+            const holders = resource.dataValues.bind;
+
+            holders.forEach((holder) => {
+              console.log('------==========----------');
+              console.log('resource', holder.dataValues);
+              console.log('------==========----------');
+              if (holder.dataValues.userNumber) {
+                let rulesList = {
+                  incidentId: data.dataValues.id,
+                  userNumber: holder.dataValues.userNumber,
+                  hasVisa: false,
+                };
+                RulesList.create(rulesList);
+                Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
+              }
+            });
+          });
+        });
+
+        console.log(
+          `[
+          { categoryId: incident.categoryId },
+          { propertyId: incident.propertyId },
+          { optionId: incident.optionId },
+        ]`,
+          [{ categoryId: incident.categoryId }, { propertyId: incident.propertyId }, { optionId: incident.optionId }],
+        );
+        await Rules.findAll({
           where: {
             [Op.or]: [
               { categoryId: incident.categoryId },
@@ -41,17 +100,26 @@ exports.create = (req, res) => {
         }).then((res) => {
           let rules = res.map((item) => item.dataValues);
           rules.forEach((item) => {
-            let rulesList = { incidentId: data.dataValues.id, positionId: item.positionId, hasVisa: false };
-            RulesList.create(rulesList);
-            Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
+            if (item.positionId) {
+              let rulesList = { incidentId: data.dataValues.id, positionId: item.positionId, hasVisa: false };
+              RulesList.create(rulesList);
+              Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
+            }
           });
         });
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || `Some error occurred while creating the Incidents`,
-        });
-      });
+
+        // await RulesList.findOne({ where: { incidentId: data.dataValues.id } }).then((resolve) => {
+        //   console.log('------==========----------');
+        //   console.log('resolve.dataValues', resolve);
+        //   console.log('------==========----------');
+        //   if (!resolve) Incident.update({ hasVisa: true, statusId: 0 }, { where: { id: data.dataValues.id } });
+        // });
+
+        await res.send(data);
+      }
+
+      createRules();
+    });
   }
   //Create object "Incident" for request DB
   const incident = {
@@ -137,7 +205,7 @@ function incidentOptions(where) {
             attributes: ['id'],
           },
         ],
-        attributes: ['hasVisa'],
+        attributes: ['hasVisa', 'userNumber', 'positionId', 'updatedAt'],
       },
     ],
   };
@@ -227,9 +295,9 @@ exports.findAllWork = (req, res) => {
   let params = incidentParams(req);
 
   const allowToCreate = req.query.allowToCreate;
-  console.log('---------------------------');
-  console.log('allowToCreate', allowToCreate);
-  console.log('---------------------------');
+  // console.log('---------------------------');
+  // console.log('allowToCreate', allowToCreate);
+  // console.log('---------------------------');
   if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
   and = [
     {
@@ -270,27 +338,29 @@ exports.findAllWork = (req, res) => {
   Object.assign(where, {
     [Op.and]: and,
   });
-  console.log('------------------------');
+  // console.log('------------------------');
 
-  console.log('params', params);
-  console.log('where', where);
-  console.log('------------------------');
+  // console.log('params', params);
+  // console.log('where', where);
+  // console.log('------------------------');
   incidentFindAll(res, where);
 };
 
 exports.findAllVisa = (req, res) => {
   const hasVisa = req.query.hasVisa;
   const positionId = req.query.positionId;
+  const userNumber = req.query.userNumber;
+
   let or = [];
-  RulesList.findAll({ where: { positionId } }).then((resolve) => {
+  RulesList.findAll({ where: { [Op.or]: [{ positionId }, { userNumber }] } }).then((resolve) => {
     console.log('------------');
-    console.log('hasVisa', hasVisa);
-    console.log('positionId', positionId);
-    console.log('res', resolve);
+    // console.log('hasVisa', hasVisa);
+    // console.log('positionId', positionId);
     or = resolve.map((item) => {
-      return { id: item.dataValues.incidentId, allowToCreate: true };
+      return { id: item.dataValues.incidentId };
     });
-    console.log('where', { [Op.or]: or });
+    console.log('or', or);
+    // console.log('where', { [Op.or]: or });
     incidentFindAll(res, {
       [Op.and]: [
         { [Op.or]: or },
@@ -314,29 +384,29 @@ exports.findAllVisa = (req, res) => {
       ],
     });
 
-    console.log('------------');
-    console.log({
-      [Op.and]: [
-        { [Op.or]: or },
-        { allowToCreate: true },
-        {
-          statusId: {
-            [Op.ne]: '8388604',
-          },
-        },
-        {
-          statusId: {
-            [Op.ne]: '8388608',
-          },
-        },
-        {
-          statusId: {
-            [Op.ne]: '8388605',
-          },
-        },
-        { hasVisa: false },
-      ],
-    });
+    // console.log('------------');
+    // console.log({
+    //   [Op.and]: [
+    //     { [Op.or]: or },
+    //     { allowToCreate: true },
+    //     {
+    //       statusId: {
+    //         [Op.ne]: '8388604',
+    //       },
+    //     },
+    //     {
+    //       statusId: {
+    //         [Op.ne]: '8388608',
+    //       },
+    //     },
+    //     {
+    //       statusId: {
+    //         [Op.ne]: '8388605',
+    //       },
+    //     },
+    //     { hasVisa: false },
+    //   ],
+    // });
   });
 };
 // Retrieve all Incidents from the database

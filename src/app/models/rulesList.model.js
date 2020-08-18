@@ -7,6 +7,10 @@ module.exports = (sequelize, Sequelize) => {
     incidentId: {
       type: Sequelize.INTEGER,
     },
+    userNumber: {
+      type: Sequelize.INTEGER,
+      field: 'user_number',
+    },
     hasVisa: {
       type: Sequelize.BOOLEAN,
       field: 'has_visa',

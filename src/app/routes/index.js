@@ -21,6 +21,6 @@ module.exports = (app) => {
   require('./rules.routes')(app);
   require('./rulesList.routes')(app);
   require('./setting.routes')(app);
-  require('./resource.routes')(app);
   require('./resourceBind.routes')(app);
+  require('./resource.routes')(app);
 };

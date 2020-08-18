@@ -40,17 +40,17 @@ exports.findAll = (req, res) => {
     });
 };
 exports.findRules = (req, res) => {
-  const categoryId = req.body.categoryId
-  const propertyId =req.body.propertyId
-  const optionId =req.body.optionId
+  const categoryId = req.query.categoryId;
+  const propertyId = req.query.propertyId;
+  const optionId = req.query.optionId;
 
-  const where = {}
+  const where = {};
 
-  if(categoryId) Object.assign(where,{categoryId})
-  if(propertyId) Object.assign(where,{propertyId})
-  if(optionId) Object.assign(where,{optionId})
+  if (categoryId) Object.assign(where, { categoryId });
+  if (propertyId) Object.assign(where, { propertyId });
+  if (optionId) Object.assign(where, { optionId });
 
-  Rules.findAll({where})
+  Rules.findAll({ where })
     .then((data) => {
       res.send(data);
     })
