@@ -23,4 +23,5 @@ module.exports = (app) => {
   require('./setting.routes')(app);
   require('./resourceBind.routes')(app);
   require('./resource.routes')(app);
+  require('./group.routes')(app);
 };
