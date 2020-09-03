@@ -37,6 +37,9 @@ require('../opModify')(db.Sequelize.Op);
   db.settings = require('./setting.model')(sequelize, Sequelize);
   db.resources = require('./resource.model')(sequelize, Sequelize);
   db.resourceBinds = require('./resourceBind.model')(sequelize, Sequelize);
+  db.group = require('./group.model')(sequelize, Sequelize);
+  db.groupList = require('./groupList.model')(sequelize, Sequelize);
+  db.groupProperty = require('./groupProperty.model')(sequelize, Sequelize);
 }
 require('./associations/resource.association')(db);
 require('./associations/rulesList.association')(db);
