@@ -8,7 +8,7 @@ module.exports = (app) => {
 
   // Retrieve all Incident
   router.get('/work', incident.findAllWork);
-  router.get('/department', incident.findAllWork);
+  router.get('/department', incident.findAllDepartment);
   router.get('/my', incident.findAllMy);
   router.get('/visa', incident.findAllVisa);
   router.get('/all', incident.findAll);

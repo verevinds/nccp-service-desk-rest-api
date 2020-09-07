@@ -295,7 +295,7 @@ exports.findAllWork = (req, res) => {
     let properties;
     if (groupId) {
       properties = await GroupProperty.findAll({
-        where: { groupId: { [Op.or]: SON.parse(groupId) } },
+        where: { groupId: { [Op.or]: JSON.parse(groupId) } },
       });
       propertyId = await properties.map((item) => item.dataValues.propertyId);
       await console.log('--------------------------');
@@ -340,6 +340,39 @@ exports.findAllWork = (req, res) => {
   })();
 };
 
+exports.findAllDepartment = (req, res) => {
+  (async function () {
+    let where = {};
+
+    const departmentId = req.query.departmentId;
+
+    and = await [
+      {
+        statusId: {
+          [Op.ne]: '8388604',
+        },
+      },
+      {
+        statusId: {
+          [Op.ne]: '8388608',
+        },
+      },
+      {
+        statusId: {
+          [Op.ne]: '8388607',
+        },
+      },
+      { departmentId },
+      { allowToCreate: false },
+    ];
+
+    Object.assign(where, {
+      [Op.and]: and,
+    });
+
+    await incidentFindAll(res, where);
+  })();
+};
 exports.findAllVisa = (req, res) => {
   const hasVisa = req.query.hasVisa;
   const positionId = req.query.positionId;
