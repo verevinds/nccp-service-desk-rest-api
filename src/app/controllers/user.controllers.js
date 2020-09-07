@@ -3,8 +3,27 @@ const User = db.users;
 const Department = db.departments;
 const Position = db.positions;
 const Responsible = db.responsible;
+const GroupList = db.groupList;
+const GroupProperty = db.groupProperty;
 const Access = db.access;
 const Op = db.Sequelize.Op;
+
+const userInclude = {
+  include: [
+    Department,
+    {
+      model: Position,
+      include: [
+        {
+          model: Responsible,
+          attributes: ['categoryId', 'departmentId', 'isArchive', 'optionId', 'positionId', 'propertyId', 'userNumber'],
+        },
+      ],
+    },
+    Access,
+    { model: GroupList, as: 'groups', include: [{ model: GroupProperty, as: 'properties' }] },
+  ],
+};
 
 // Create and Save a new Users
 exports.create = (req, res) => {
@@ -67,27 +86,7 @@ exports.findAll = (req, res) => {
 
   User.findAll({
     where: condition,
-    include: [
-      Department,
-      {
-        model: Position,
-        include: [
-          {
-            model: Responsible,
-            attributes: [
-              'categoryId',
-              'departmentId',
-              'isArchive',
-              'optionId',
-              'positionId',
-              'propertyId',
-              'userNumber',
-            ],
-          },
-        ],
-      },
-      Access,
-    ],
+    ...userInclude,
   })
     .then((data) => {
       res.send(data);
@@ -105,27 +104,7 @@ exports.findOne = (req, res) => {
 
   User.findOne({
     where: { number },
-    include: [
-      Department,
-      {
-        model: Position,
-        include: [
-          {
-            model: Responsible,
-            attributes: [
-              'categoryId',
-              'departmentId',
-              'isArchive',
-              'optionId',
-              'positionId',
-              'propertyId',
-              'userNumber',
-            ],
-          },
-        ],
-      },
-      Access,
-    ],
+    ...userInclude,
   })
     .then((data) => {
       res.send(data);

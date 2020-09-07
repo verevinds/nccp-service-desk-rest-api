@@ -17,7 +17,7 @@ exports.create = (req, res) => {
     optionId: req.body.optionId,
   };
 
-  GroupProperty.create(groupProperty)
+  GroupProperty.findOrCreate({ where: { propertyId: groupProperty.propertyId }, defaults: groupProperty })
     .then((data) => {
       res.send(data);
     })

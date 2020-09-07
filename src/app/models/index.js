@@ -44,6 +44,8 @@ require('../opModify')(db.Sequelize.Op);
 require('./associations/resource.association')(db);
 require('./associations/rulesList.association')(db);
 require('./associations/incident.association')(db);
+require('./associations/group.association')(db);
+require('./associations/users.association')(db);
 {
   db.positions.hasOne(db.rulesList);
   db.rulesList.belongsTo(db.positions);

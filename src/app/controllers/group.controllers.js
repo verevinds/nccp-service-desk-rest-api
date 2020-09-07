@@ -1,5 +1,8 @@
 const db = require('../models');
 const Group = db.group;
+const GroupList = db.groupList;
+const GroupProperty = db.groupProperty;
+const Users = db.users;
 
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -26,7 +29,12 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Group.findAll()
+  Group.findAll({
+    include: [
+      { model: GroupList, as: 'users', include: [{ model: Users, as: 'user' }] },
+      { model: GroupProperty, as: 'properties' },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

@@ -3,6 +3,10 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
     },
+    isArchive: {
+      type: Sequelize.BOOLEAN,
+      field: 'is_archive',
+    },
   });
   return Group;
 };

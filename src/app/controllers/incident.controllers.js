@@ -13,6 +13,7 @@ const RulesList = db.rulesList;
 const Positions = db.positions;
 const Resources = db.resources;
 const ResourceBind = db.resourceBinds;
+const GroupProperty = db.groupProperty;
 const Op = db.Sequelize.Op;
 const io = db.io;
 
@@ -287,63 +288,56 @@ exports.findAllMy = (req, res) => {
 
 // Retrieve all Incidents from the database
 exports.findAllWork = (req, res) => {
-  let where = {};
-  const userNumber = req.query.userNumber;
+  (async function () {
+    let where = {};
+    const groupId = req.query.groups;
+    let propertyId;
+    let properties;
+    if (groupId) {
+      properties = await GroupProperty.findAll({
+        where: { groupId: { [Op.or]: SON.parse(groupId) } },
+      });
+      propertyId = await properties.map((item) => item.dataValues.propertyId);
+      await console.log('--------------------------');
+      await console.log('propertyId----', propertyId);
+      await console.log('--------------------------');
+    }
+    const departmentId = req.query.departmentId;
 
-  const departmentId = req.query.departmentId;
+    let params = await incidentParams(req);
 
-  let params = incidentParams(req);
-
-  const allowToCreate = req.query.allowToCreate;
-  // console.log('---------------------------');
-  // console.log('allowToCreate', allowToCreate);
-  // console.log('---------------------------');
-  if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
-  and = [
-    {
-      statusId: {
-        [Op.ne]: '8388604',
+    const allowToCreate = true;
+    // console.log('---------------------------');
+    // console.log('allowToCreate', allowToCreate);
+    // console.log('---------------------------');
+    if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+    and = await [
+      {
+        statusId: {
+          [Op.ne]: '8388604',
+        },
       },
-    },
-    {
-      statusId: {
-        [Op.ne]: '8388608',
+      {
+        statusId: {
+          [Op.ne]: '8388608',
+        },
       },
-    },
-    {
-      statusId: {
-        [Op.ne]: '8388607',
+      {
+        statusId: {
+          [Op.ne]: '8388607',
+        },
       },
-    },
-    { [Op.or]: params },
-    { allowToCreate: allowToCreate },
-  ];
-  if (allowToCreate !== 'false') and.push({ hasVisa: true });
-  else and.push({ initiatorDepartment: departmentId });
+      { allowToCreate: allowToCreate },
+    ];
+    if (groupId) and.push({ propertyId: { [Op.or]: propertyId } });
+    else and.push({ departmentId });
 
-  // if (departmentId && params.length < 1) params.push({ departmentId: departmentId });
+    Object.assign(where, {
+      [Op.and]: and,
+    });
 
-  // if (params.length > 0) Object.assign(where, { [Op.or]: params });
-  // if (history) {
-  //   let and = [];
-  //   if (params.length) and.push({ [Op.or]: params });
-  //   and.push({
-  //     [Op.or]: [{ statusId: '8388608' }, { statusId: '8388604' }],
-  //   });
-
-  //   Object.assign(where, {
-  //     [Op.and]: and,
-  //   });
-  // } else
-  Object.assign(where, {
-    [Op.and]: and,
-  });
-  // console.log('------------------------');
-
-  // console.log('params', params);
-  // console.log('where', where);
-  // console.log('------------------------');
-  incidentFindAll(res, where);
+    await incidentFindAll(res, where);
+  })();
 };
 
 exports.findAllVisa = (req, res) => {
