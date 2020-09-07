@@ -43,7 +43,7 @@ exports.findAll = (req, res) => {
         attributes: ['id', 'name', 'departmentId', 'level', 'isArchive', 'deadline'],
       },
     ],
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'parent'],
   })
     .then((data) => {
       res.send(data);
