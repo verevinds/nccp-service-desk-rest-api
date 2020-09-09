@@ -25,17 +25,11 @@ exports.create = (req, res) => {
     });
     return;
   }
-  function create(incident) {
-    Incident.create(incident).then((data) => {
-      // io.on('connection', (client) => {
-      //   client.broadcast.emit(String(incident.departmentId), data);
-      // });
-
-      const resources = [];
-      console.log('------==========----------');
-      console.log('data', data);
-      console.log('------==========----------');
-      incident.params.map((row, indexRow) => {
+  async function create(incident) {
+    let newIncident = await Incident.create(incident);
+    const resources = [];
+    if (newIncident && newIncident.dataValues)
+      newIncident.dataValues.params?.map((row, indexRow) => {
         row.map((col, indexCol) => {
           if (col) {
             const { select, value } = col;
@@ -43,84 +37,59 @@ exports.create = (req, res) => {
           }
         });
       });
+    const resourcesUnique = Array.from(new Set(resources));
+    const paramsOr = resourcesUnique.map((resource) => {
+      return { id: resource };
+    });
+    const resource = await Resources.findAll({
+      where: { [Op.or]: paramsOr },
+      include: [
+        {
+          model: ResourceBind,
+          as: 'bind',
+          attributes: ['id', 'userNumber'],
+        },
+      ],
+    });
 
-      const resourcesUnique = Array.from(new Set(resources));
-
-      const paramsOr = resourcesUnique.map((resource) => {
-        return { id: resource };
+    if (resource)
+      resources.forEach((resource) => {
+        const holders = resource.dataValues.bind;
+        holders.forEach((holder) => {
+          if (holder.dataValues.userNumber) {
+            let rulesList = {
+              incidentId: data.dataValues.id,
+              userNumber: holder.dataValues.userNumber,
+              hasVisa: false,
+            };
+            RulesList.create(rulesList);
+            Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
+          }
+        });
       });
 
-      async function createRules() {
-        await Resources.findAll({
-          where: { [Op.or]: paramsOr },
-          include: [
-            {
-              model: ResourceBind,
-              as: 'bind',
-
-              attributes: ['id', 'userNumber'],
-            },
-          ],
-        }).then((resources) => {
-          resources.forEach((resource) => {
-            const holders = resource.dataValues.bind;
-
-            holders.forEach((holder) => {
-              console.log('------==========----------');
-              console.log('resource', holder.dataValues);
-              console.log('------==========----------');
-              if (holder.dataValues.userNumber) {
-                let rulesList = {
-                  incidentId: data.dataValues.id,
-                  userNumber: holder.dataValues.userNumber,
-                  hasVisa: false,
-                };
-                RulesList.create(rulesList);
-                Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
-              }
-            });
-          });
-        });
-
-        console.log(
-          `[
+    let rules = await Rules.findAll({
+      where: {
+        [Op.or]: [
           { categoryId: incident.categoryId },
           { propertyId: incident.propertyId },
           { optionId: incident.optionId },
-        ]`,
-          [{ categoryId: incident.categoryId }, { propertyId: incident.propertyId }, { optionId: incident.optionId }],
-        );
-        await Rules.findAll({
-          where: {
-            [Op.or]: [
-              { categoryId: incident.categoryId },
-              { propertyId: incident.propertyId },
-              { optionId: incident.optionId },
-            ],
-          },
-        }).then((res) => {
-          let rules = res.map((item) => item.dataValues);
-          rules.forEach((item) => {
-            if (item.positionId) {
-              let rulesList = { incidentId: data.dataValues.id, positionId: item.positionId, hasVisa: false };
-              RulesList.create(rulesList);
-              Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: data.dataValues.id } });
-            }
-          });
-        });
-
-        // await RulesList.findOne({ where: { incidentId: data.dataValues.id } }).then((resolve) => {
-        //   console.log('------==========----------');
-        //   console.log('resolve.dataValues', resolve);
-        //   console.log('------==========----------');
-        //   if (!resolve) Incident.update({ hasVisa: true, statusId: 0 }, { where: { id: data.dataValues.id } });
-        // });
-
-        await res.send(data);
-      }
-
-      createRules();
+        ],
+      },
     });
+    rules = rules && Array.isArray(rules) ? rules.map((item) => item.dataValues) : undefined;
+    if (rules)
+      await rules.forEach((item) => {
+        if (item.positionId) {
+          let rulesList = { incidentId: newIncident.dataValues.id, positionId: item.positionId, hasVisa: false };
+          RulesList.create(rulesList);
+          Incident.update({ hasVisa: false, statusId: 8388606 }, { where: { id: newIncident.dataValues.id } });
+          io.on('connection', (client) => {
+            client.broadcast.emit(String(incident.departmentId), data);
+          });
+        }
+      });
+    res.send(newIncident.dataValues);
   }
   //Create object "Incident" for request DB
   const incident = {
@@ -148,6 +117,7 @@ exports.create = (req, res) => {
 
   create(incident);
 };
+
 function incidentOptions(where) {
   return {
     where,
