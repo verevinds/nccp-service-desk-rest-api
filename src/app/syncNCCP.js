@@ -5,7 +5,10 @@ module.exports = async function syncNCCP() {
   const users = require('./controllers/user.controllers');
   const db = require('./models');
   const User = db.users;
+  const Departments = db.departments;
+  const Positions = db.positions;
   const status = require('./controllers/status.constrollers');
+
   axios
     .get('http://api.nccp-eng.ru/', {
       params: {
@@ -13,7 +16,6 @@ module.exports = async function syncNCCP() {
       },
     })
     .then((res) => {
-      console.log(res);
       for (let key in res.data) {
         let data = {
           body: {
@@ -41,5 +43,51 @@ module.exports = async function syncNCCP() {
         User.create(data.body);
         User.update(data.body, { where: { number: key } });
       }
+      console.log('Сотрудники обновлены');
+    });
+
+  axios
+    .get('http://api.nccp-eng.ru/', {
+      params: {
+        method: 'jobs.get',
+      },
+    })
+    .then((res) => {
+      for (let key in res.data) {
+        let data = {
+          body: {
+            id: key,
+            name: res.data[key].name,
+            parent: res.data[key].parent,
+          },
+          isConsole: true,
+        };
+
+        Departments.create(data.body);
+        Departments.update(data.body, { where: { id: key } });
+      }
+      console.log('Отделы обновлены');
+    });
+
+  axios
+    .get('http://api.nccp-eng.ru/', {
+      params: {
+        method: 'jobs.get',
+      },
+    })
+    .then((res) => {
+      for (let key in res.data) {
+        let data = {
+          body: {
+            id: key,
+            name: res.data[key].name,
+            level: 0,
+          },
+          isConsole: true,
+        };
+        Positions.create(data.body);
+        Positions.update(data.body, { where: { id: key } });
+      }
+      console.log('Должности обновлены');
     });
 };
