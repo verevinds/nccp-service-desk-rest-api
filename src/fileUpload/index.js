@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
 
         res.send({
           message: `Файл ${filename} успешно загружен`,
-          url: `http://srv-sdesk.c31.nccp.ru/restapi/upload/${name}`,
+          url: `http://srv-sdesk.c31.nccp.ru/restapi/src/upload/${name}`,
           filename,
           wasFile: true,
         });
